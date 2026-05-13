@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Контакты — Климат-Инарс</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .contacts-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+    .contact-info-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 2rem; }
+    .contact-info-card h3 { color: var(--primary); margin-bottom: 1.5rem; }
+    .contact-item { display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: flex-start; }
+    .contact-item-icon { width: 48px; height: 48px; background: var(--light-2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+    .contact-item-body h4 { color: var(--primary); font-size: 0.9rem; margin-bottom: 0.3rem; }
+    .contact-item-body p, .contact-item-body a { color: var(--text-light); font-size: 0.92rem; }
+    .contact-item-body a:hover { color: var(--accent); }
+    .contact-form-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 2rem; }
+    .contact-form-card h3 { color: var(--primary); margin-bottom: 1.5rem; }
+    .map-placeholder { background: linear-gradient(135deg, var(--light-2), var(--light)); border-radius: var(--radius-lg); height: 300px; display: flex; align-items: center; justify-content: center; color: var(--gray); font-size: 1.1rem; text-align: center; border: 2px dashed var(--gray-light); margin-top: 2rem; flex-direction: column; gap: 0.5rem; }
+    @media (max-width: 768px) { .contacts-layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-top">
+    <div class="container">
+      <div>ООО «Климат-Инарс» — профессиональные системы кондиционирования</div>
+      <div class="header-top-contacts">
+        <a href="tel:+74951234567">📞 +7 (495) 123-45-67</a>
+        <a href="mailto:info@klimat-inars.ru">✉ info@klimat-inars.ru</a>
+        <span>Пн–Пт: 9:00–18:00</span>
+      </div>
+    </div>
+  </div>
+  <div class="header-main">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">❄</div>
+        <div class="logo-text">
+          <span class="logo-name">Климат-Инарс</span>
+          <span class="logo-tagline">Кондиционирование и вентиляция</span>
+        </div>
+      </a>
+      <nav class="nav">
+        <ul>
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="catalog.html">Каталог</a></li>
+          <li><a href="services.html">Услуги</a></li>
+          <li><a href="calculator.html">Калькулятор</a></li>
+          <li><a href="about.html">О нас</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a href="cart.html" class="cart-btn">
+          🛒 Корзина
+          <span class="cart-count hidden">0</span>
+        </a>
+        <button class="burger" id="burgerBtn" aria-label="Меню">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-close" id="mobileNavClose">✕</button>
+  <ul>
+    <li><a href="index.html">🏠 Главная</a></li>
+    <li><a href="catalog.html">📦 Каталог</a></li>
+    <li><a href="services.html">🔧 Услуги</a></li>
+    <li><a href="calculator.html">🧮 Калькулятор</a></li>
+    <li><a href="about.html">ℹ О нас</a></li>
+    <li><a href="contacts.html">📍 Контакты</a></li>
+    <li><a href="cart.html">🛒 Корзина</a></li>
+  </ul>
+</nav>
+
+<div class="breadcrumb">
+  <div class="container">
+    <a href="index.html">Главная</a> <span>›</span> Контакты
+  </div>
+</div>
+
+<div class="page-hero">
+  <div class="container">
+    <h1>Контакты</h1>
+    <p>Свяжитесь с нами любым удобным способом</p>
+  </div>
+</div>
+
+<section class="section section-light">
+  <div class="container">
+    <div class="contacts-layout">
+
+      <!-- Contact Info -->
+      <div>
+        <div class="contact-info-card">
+          <h3>Контактная информация</h3>
+          <div class="contact-item">
+            <div class="contact-item-icon">📞</div>
+            <div class="contact-item-body">
+              <h4>Телефон</h4>
+              <p><a href="tel:+74951234567">+7 (495) 123-45-67</a></p>
+              <p style="font-size:0.8rem;color:var(--gray);margin-top:0.2rem">Звонок бесплатный, Пн–Пт 9:00–18:00</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">📱</div>
+            <div class="contact-item-body">
+              <h4>WhatsApp / Telegram</h4>
+              <p><a href="tel:+79161234567">+7 (916) 123-45-67</a></p>
+              <p style="font-size:0.8rem;color:var(--gray);margin-top:0.2rem">Ответим в течение 15 минут</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">✉</div>
+            <div class="contact-item-body">
+              <h4>Электронная почта</h4>
+              <p><a href="mailto:info@klimat-inars.ru">info@klimat-inars.ru</a></p>
+              <p><a href="mailto:zakaz@klimat-inars.ru">zakaz@klimat-inars.ru</a> — для заказов</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">📍</div>
+            <div class="contact-item-body">
+              <h4>Адрес офиса и шоурума</h4>
+              <p>г. Москва, ул. Примерная, д. 1, офис 205</p>
+              <p style="font-size:0.8rem;color:var(--gray);margin-top:0.2rem">м. Площадь Революции, 5 минут пешком</p>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-item-icon">🕐</div>
+            <div class="contact-item-body">
+              <h4>Режим работы</h4>
+              <p>Понедельник — Пятница: 9:00 — 18:00</p>
+              <p>Суббота: 10:00 — 15:00</p>
+              <p>Воскресенье: выходной</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="map-placeholder">
+          <div style="font-size:2.5rem">🗺️</div>
+          <div>Карта загружается...</div>
+          <div style="font-size:0.8rem">г. Москва, ул. Примерная, д. 1</div>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="contact-form-card">
+        <h3>Оставить заявку</h3>
+        <p style="color:var(--text-light);font-size:0.9rem;margin-bottom:1.5rem">Заполните форму — мы перезвоним в течение 15 минут и ответим на все вопросы бесплатно</p>
+
+        <div id="contactSuccess" style="display:none;text-align:center;padding:2rem">
+          <div style="font-size:3rem">✅</div>
+          <h3 style="color:#27ae60;margin:1rem 0 0.5rem">Заявка принята!</h3>
+          <p style="color:var(--text-light);font-size:0.9rem">Наш специалист свяжется с вами в течение 15 минут.</p>
+          <button onclick="document.getElementById('contactSuccess').style.display='none';document.getElementById('contactForm').style.display='block'" class="btn btn-outline" style="margin-top:1.5rem">Отправить ещё</button>
+        </div>
+
+        <form id="contactForm">
+          <div class="form-group">
+            <label>Имя <span class="required" style="color:#e74c3c">*</span></label>
+            <input type="text" name="name" class="form-control" placeholder="Ваше имя" required>
+            <div class="form-error"></div>
+          </div>
+          <div class="form-group">
+            <label>Телефон <span class="required" style="color:#e74c3c">*</span></label>
+            <input type="tel" name="phone" class="form-control" placeholder="+7 (___) ___-__-__" required>
+            <div class="form-error"></div>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" class="form-control" placeholder="example@mail.ru">
+          </div>
+          <div class="form-group">
+            <label>Тема обращения</label>
+            <select name="subject" class="form-control">
+              <option value="">Выберите тему...</option>
+              <option value="buy">Покупка оборудования</option>
+              <option value="install">Монтаж / установка</option>
+              <option value="service">Техническое обслуживание</option>
+              <option value="repair">Ремонт</option>
+              <option value="project">Проектирование</option>
+              <option value="other">Другое</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Сообщение</label>
+            <textarea name="message" class="form-control" placeholder="Опишите ваш вопрос или задачу..." rows="4"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:1rem;font-size:1rem" id="contactSubmitBtn">
+            📨 Отправить заявку
+          </button>
+          <p style="font-size:0.74rem;color:var(--gray);margin-top:0.75rem;text-align:center">
+            Нажимая кнопку, вы соглашаетесь с обработкой персональных данных
+          </p>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- REKVIZITY -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Реквизиты компании</h2>
+    <div style="background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow);padding:2rem;max-width:600px;margin:0 auto">
+      <table style="width:100%;border-collapse:collapse">
+        <tr style="border-bottom:1px solid var(--gray-light)">
+          <td style="padding:0.75rem 0;color:var(--gray);font-size:0.88rem;width:45%">Полное наименование</td>
+          <td style="padding:0.75rem 0;font-size:0.88rem">ООО «Климат-Инарс»</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gray-light)">
+          <td style="padding:0.75rem 0;color:var(--gray);font-size:0.88rem">ИНН</td>
+          <td style="padding:0.75rem 0;font-size:0.88rem">7701234567</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gray-light)">
+          <td style="padding:0.75rem 0;color:var(--gray);font-size:0.88rem">КПП</td>
+          <td style="padding:0.75rem 0;font-size:0.88rem">770101001</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gray-light)">
+          <td style="padding:0.75rem 0;color:var(--gray);font-size:0.88rem">ОГРН</td>
+          <td style="padding:0.75rem 0;font-size:0.88rem">1037701234567</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gray-light)">
+          <td style="padding:0.75rem 0;color:var(--gray);font-size:0.88rem">Юридический адрес</td>
+          <td style="padding:0.75rem 0;font-size:0.88rem">115054, г. Москва, ул. Примерная, д. 1</td>
+        </tr>
+        <tr>
+          <td style="padding:0.75rem 0;color:var(--gray);font-size:0.88rem">Расчётный счёт</td>
+          <td style="padding:0.75rem 0;font-size:0.88rem">40702810000000000000</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <div class="logo-icon">❄</div>
+            <div class="logo-text">
+              <span class="logo-name">Климат-Инарс</span>
+              <span class="logo-tagline">Кондиционирование и вентиляция</span>
+            </div>
+          </a>
+          <p>Профессиональные системы климат-контроля с 2010 года.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Навигация</h4>
+          <ul>
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="catalog.html">Каталог</a></li>
+            <li><a href="services.html">Услуги</a></li>
+            <li><a href="about.html">О нас</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Услуги</h4>
+          <ul>
+            <li><a href="services.html">Монтаж</a></li>
+            <li><a href="services.html">Обслуживание</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Контакты</h4>
+          <div class="footer-contact-item"><span class="icon">📞</span><span>+7 (495) 123-45-67</span></div>
+          <div class="footer-contact-item"><span class="icon">✉</span><span>info@klimat-inars.ru</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© 2025 ООО «Климат-Инарс». Все права защищены.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('contactSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Отправляем...';
+  setTimeout(() => {
+    document.getElementById('contactForm').style.display = 'none';
+    document.getElementById('contactSuccess').style.display = 'block';
+  }, 800);
+});
+</script>
+</body>
+</html>

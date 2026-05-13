@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор стоимости — Климат-Инарс</title>
+  <meta name="description" content="Онлайн-калькулятор стоимости установки кондиционера и системы вентиляции. Рассчитайте бюджет за 2 минуты.">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .calc-layout { display: grid; grid-template-columns: 1fr 400px; gap: 2rem; align-items: start; }
+    .calc-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden; }
+    .calc-card-header { background: linear-gradient(135deg, var(--primary), var(--accent)); padding: 1.5rem; color: var(--white); }
+    .calc-card-header h3 { margin-bottom: 0.25rem; }
+    .calc-card-header p { font-size: 0.85rem; opacity: 0.85; }
+    .calc-body { padding: 1.75rem; }
+    .calc-step { margin-bottom: 2rem; }
+    .step-label { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; font-size: 0.95rem; }
+    .step-num { background: var(--accent); color: var(--white); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+    .options-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.75rem; }
+    .option-btn {
+      padding: 0.85rem 0.75rem; border: 2px solid var(--gray-light); border-radius: var(--radius);
+      text-align: center; cursor: pointer; transition: var(--transition);
+      background: var(--white); font-family: inherit; font-size: 0.85rem; color: var(--text);
+    }
+    .option-btn .icon { font-size: 1.5rem; display: block; margin-bottom: 0.3rem; }
+    .option-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .option-btn.selected { background: var(--accent); color: var(--white); border-color: var(--accent); }
+    .range-group { margin-bottom: 1rem; }
+    .range-group label { display: flex; justify-content: space-between; font-size: 0.88rem; color: var(--text); margin-bottom: 0.5rem; }
+    .range-group label span { font-weight: 700; color: var(--accent); }
+    input[type="range"] { width: 100%; accent-color: var(--accent); height: 6px; cursor: pointer; }
+    .checkbox-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .checkbox-item { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem; border: 1.5px solid var(--gray-light); border-radius: 8px; cursor: pointer; transition: var(--transition); }
+    .checkbox-item:hover { border-color: var(--accent-light); }
+    .checkbox-item.checked { border-color: var(--accent); background: rgba(41,128,185,0.05); }
+    .checkbox-item input { width: 16px; height: 16px; accent-color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+    .checkbox-item .item-label { font-size: 0.88rem; font-weight: 500; }
+    .checkbox-item .item-price { font-size: 0.78rem; color: var(--accent); font-weight: 600; }
+
+    /* Result card */
+    .result-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); position: sticky; top: 90px; }
+    .result-header { background: linear-gradient(135deg, var(--primary), var(--accent)); padding: 1.5rem; color: var(--white); border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+    .result-header h3 { margin-bottom: 0.25rem; }
+    .result-body { padding: 1.5rem; }
+    .result-total { text-align: center; padding: 1.25rem; background: var(--light); border-radius: var(--radius); margin-bottom: 1.5rem; }
+    .result-total .label { font-size: 0.85rem; color: var(--gray); margin-bottom: 0.4rem; }
+    .result-total .amount { font-size: 2.2rem; font-weight: 900; color: var(--accent); line-height: 1; }
+    .result-total .range { font-size: 0.78rem; color: var(--gray); margin-top: 0.3rem; }
+    .breakdown { display: flex; flex-direction: column; gap: 0; }
+    .breakdown-row { display: flex; justify-content: space-between; padding: 0.6rem 0; border-bottom: 1px solid var(--gray-light); font-size: 0.85rem; }
+    .breakdown-row:last-child { border-bottom: none; }
+    .breakdown-row .name { color: var(--text-light); }
+    .breakdown-row .val { font-weight: 600; color: var(--text); }
+    .breakdown-row.total-row { font-weight: 700; font-size: 0.95rem; padding-top: 0.75rem; }
+    .breakdown-row.total-row .val { color: var(--accent); }
+    .disclaimer { font-size: 0.75rem; color: var(--gray); margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-light); }
+
+    .progress-bar { height: 4px; background: var(--light-2); border-radius: 2px; margin-bottom: 2rem; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(to right, var(--accent), var(--primary)); border-radius: 2px; transition: width 0.4s ease; }
+
+    @media (max-width: 992px) {
+      .calc-layout { grid-template-columns: 1fr; }
+      .result-card { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-top">
+    <div class="container">
+      <div>ООО «Климат-Инарс» — профессиональные системы кондиционирования</div>
+      <div class="header-top-contacts">
+        <a href="tel:+74951234567">📞 +7 (495) 123-45-67</a>
+        <a href="mailto:info@klimat-inars.ru">✉ info@klimat-inars.ru</a>
+      </div>
+    </div>
+  </div>
+  <div class="header-main">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">❄</div>
+        <div class="logo-text">
+          <span class="logo-name">Климат-Инарс</span>
+          <span class="logo-tagline">Кондиционирование и вентиляция</span>
+        </div>
+      </a>
+      <nav class="nav">
+        <ul>
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="catalog.html">Каталог</a></li>
+          <li><a href="services.html">Услуги</a></li>
+          <li><a href="calculator.html">Калькулятор</a></li>
+          <li><a href="about.html">О нас</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a href="cart.html" class="cart-btn">
+          🛒 Корзина
+          <span class="cart-count hidden">0</span>
+        </a>
+        <button class="burger" id="burgerBtn" aria-label="Меню">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-close" id="mobileNavClose">✕</button>
+  <ul>
+    <li><a href="index.html">🏠 Главная</a></li>
+    <li><a href="catalog.html">📦 Каталог</a></li>
+    <li><a href="services.html">🔧 Услуги</a></li>
+    <li><a href="calculator.html">🧮 Калькулятор</a></li>
+    <li><a href="about.html">ℹ О нас</a></li>
+    <li><a href="contacts.html">📍 Контакты</a></li>
+    <li><a href="cart.html">🛒 Корзина</a></li>
+  </ul>
+</nav>
+
+<div class="breadcrumb">
+  <div class="container">
+    <a href="index.html">Главная</a> <span>›</span> Калькулятор стоимости
+  </div>
+</div>
+
+<div class="page-hero">
+  <div class="container">
+    <h1>Калькулятор стоимости</h1>
+    <p>Рассчитайте приблизительную стоимость оборудования и монтажа за 2 минуты</p>
+  </div>
+</div>
+
+<section class="section section-light">
+  <div class="container">
+    <div class="calc-layout">
+
+      <!-- Calculator Form -->
+      <div class="calc-card">
+        <div class="calc-card-header">
+          <h3>🧮 Параметры расчёта</h3>
+          <p>Заполните параметры — результат обновится автоматически</p>
+        </div>
+        <div class="calc-body">
+
+          <!-- Progress -->
+          <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+          <!-- Step 1: Object type -->
+          <div class="calc-step">
+            <div class="step-label"><span class="step-num">1</span> Тип помещения</div>
+            <div class="options-grid">
+              <button class="option-btn selected" data-group="objectType" data-value="apartment">
+                <span class="icon">🏠</span>Квартира
+              </button>
+              <button class="option-btn" data-group="objectType" data-value="office">
+                <span class="icon">🏢</span>Офис
+              </button>
+              <button class="option-btn" data-group="objectType" data-value="shop">
+                <span class="icon">🏪</span>Магазин
+              </button>
+              <button class="option-btn" data-group="objectType" data-value="industrial">
+                <span class="icon">🏭</span>Производство
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 2: Area -->
+          <div class="calc-step">
+            <div class="step-label"><span class="step-num">2</span> Площадь помещения</div>
+            <div class="range-group">
+              <label>Площадь: <span id="areaValue">30</span> м²</label>
+              <input type="range" id="areaRange" min="10" max="300" value="30" step="5">
+              <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--gray);margin-top:0.3rem">
+                <span>10 м²</span><span>300 м²</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3: System type -->
+          <div class="calc-step">
+            <div class="step-label"><span class="step-num">3</span> Тип системы</div>
+            <div class="options-grid">
+              <button class="option-btn selected" data-group="systemType" data-value="split">
+                <span class="icon">❄️</span>Сплит-система
+              </button>
+              <button class="option-btn" data-group="systemType" data-value="cassette">
+                <span class="icon">🏢</span>Кассетный
+              </button>
+              <button class="option-btn" data-group="systemType" data-value="duct">
+                <span class="icon">🌫️</span>Канальный
+              </button>
+              <button class="option-btn" data-group="systemType" data-value="ventilation">
+                <span class="icon">💨</span>Вентиляция
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 4: Brand tier -->
+          <div class="calc-step">
+            <div class="step-label"><span class="step-num">4</span> Класс оборудования</div>
+            <div class="options-grid" style="grid-template-columns:repeat(3,1fr)">
+              <button class="option-btn" data-group="brandTier" data-value="economy">
+                <span class="icon">💚</span>Эконом<br><small style="font-size:0.7rem;opacity:0.7">Haier, LG</small>
+              </button>
+              <button class="option-btn selected" data-group="brandTier" data-value="standard">
+                <span class="icon">💙</span>Стандарт<br><small style="font-size:0.7rem;opacity:0.7">Samsung, Panasonic</small>
+              </button>
+              <button class="option-btn" data-group="brandTier" data-value="premium">
+                <span class="icon">💜</span>Премиум<br><small style="font-size:0.7rem;opacity:0.7">Daikin, Mitsubishi</small>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 5: Quantity -->
+          <div class="calc-step">
+            <div class="step-label"><span class="step-num">5</span> Количество единиц</div>
+            <div class="range-group">
+              <label>Количество: <span id="qtyValue">1</span> шт</label>
+              <input type="range" id="qtyRange" min="1" max="10" value="1" step="1">
+              <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--gray);margin-top:0.3rem">
+                <span>1 шт</span><span>10 шт</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 6: Additional options -->
+          <div class="calc-step">
+            <div class="step-label"><span class="step-num">6</span> Дополнительные услуги</div>
+            <div class="checkbox-list">
+              <label class="checkbox-item" id="opt-install">
+                <input type="checkbox" id="optInstall" checked>
+                <div>
+                  <div class="item-label">🔧 Монтаж и пуско-наладка</div>
+                  <div class="item-price">+8 000 ₽ за единицу</div>
+                </div>
+              </label>
+              <label class="checkbox-item" id="opt-maintenance">
+                <input type="checkbox" id="optMaintenance">
+                <div>
+                  <div class="item-label">🛠️ Первое ТО (через 3 месяца)</div>
+                  <div class="item-price">+3 500 ₽ за единицу</div>
+                </div>
+              </label>
+              <label class="checkbox-item" id="opt-design">
+                <input type="checkbox" id="optDesign">
+                <div>
+                  <div class="item-label">📐 Проектирование системы</div>
+                  <div class="item-price">+15 000 ₽ (разово)</div>
+                </div>
+              </label>
+              <label class="checkbox-item" id="opt-wifi">
+                <input type="checkbox" id="optWifi">
+                <div>
+                  <div class="item-label">📱 Wi-Fi модуль и настройка</div>
+                  <div class="item-price">+4 500 ₽ за единицу</div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div class="result-card">
+        <div class="result-header">
+          <h3>💰 Предварительный расчёт</h3>
+          <p style="font-size:0.82rem;opacity:0.85">Обновляется автоматически</p>
+        </div>
+        <div class="result-body">
+          <div class="result-total">
+            <div class="label">Итоговая стоимость</div>
+            <div class="amount" id="totalAmount">45 900 ₽</div>
+            <div class="range" id="totalRange">от 40 000 до 55 000 ₽</div>
+          </div>
+
+          <div class="breakdown" id="breakdownList">
+            <!-- Filled by JS -->
+          </div>
+
+          <div class="disclaimer">
+            * Расчёт является приблизительным. Точная стоимость определяется после выезда специалиста и составления сметы.
+          </div>
+
+          <div style="margin-top:1.5rem;display:flex;flex-direction:column;gap:0.75rem">
+            <a href="contacts.html" class="btn btn-primary" style="width:100%;justify-content:center">
+              📞 Получить точный расчёт
+            </a>
+            <a href="catalog.html" class="btn btn-outline" style="width:100%;justify-content:center">
+              📦 Перейти в каталог
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <div class="logo-icon">❄</div>
+            <div class="logo-text">
+              <span class="logo-name">Климат-Инарс</span>
+              <span class="logo-tagline">Кондиционирование и вентиляция</span>
+            </div>
+          </a>
+          <p>Профессиональные системы климат-контроля с 2010 года.</p>
+        </div>
+        <div class="footer-col"><h4>Навигация</h4><ul><li><a href="catalog.html">Каталог</a></li><li><a href="services.html">Услуги</a></li><li><a href="contacts.html">Контакты</a></li></ul></div>
+        <div class="footer-col"><h4>Услуги</h4><ul><li><a href="services.html">Монтаж</a></li><li><a href="services.html">Обслуживание</a></li></ul></div>
+        <div class="footer-col"><h4>Контакты</h4><div class="footer-contact-item"><span class="icon">📞</span><span>+7 (495) 123-45-67</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="footer-bottom"><span>© 2025 ООО «Климат-Инарс». Все права защищены.</span></div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script>
+/* ===== CALCULATOR LOGIC ===== */
+const state = {
+  objectType: 'apartment',
+  systemType: 'split',
+  brandTier: 'standard',
+  area: 30,
+  qty: 1,
+  install: true,
+  maintenance: false,
+  design: false,
+  wifi: false
+};
+
+// Base equipment prices per kW capacity needed (per m²: 0.1 kW needed)
+const systemBase = { split: 28000, cassette: 65000, duct: 55000, ventilation: 35000 };
+const tierMult = { economy: 0.72, standard: 1.0, premium: 1.55 };
+const objectMult = { apartment: 1.0, office: 1.1, shop: 1.15, industrial: 1.3 };
+
+function calcPower(area) {
+  return Math.max(1, Math.ceil(area * 0.1 / 2.5) * 2.5); // round to 2.5 kW
+}
+
+function calc() {
+  const kw = calcPower(state.area);
+  const units = state.qty;
+
+  const eqPrice = systemBase[state.systemType] * tierMult[state.brandTier] * objectMult[state.objectType] * Math.ceil(kw / 2.5) * units;
+  const installPrice = state.install ? 8000 * units : 0;
+  const maintenancePrice = state.maintenance ? 3500 * units : 0;
+  const designPrice = state.design ? 15000 : 0;
+  const wifiPrice = state.wifi ? 4500 * units : 0;
+  const total = eqPrice + installPrice + maintenancePrice + designPrice + wifiPrice;
+
+  // Update total
+  document.getElementById('totalAmount').textContent = formatNum(total) + ' ₽';
+  document.getElementById('totalRange').textContent = `от ${formatNum(Math.round(total * 0.9))} до ${formatNum(Math.round(total * 1.2))} ₽`;
+
+  // Breakdown
+  const rows = [
+    { name: `Оборудование (${units} шт, ${kw} кВт)`, val: eqPrice },
+    state.install && { name: `Монтаж (${units} шт)`, val: installPrice },
+    state.maintenance && { name: `Первое ТО (${units} шт)`, val: maintenancePrice },
+    state.design && { name: 'Проектирование', val: designPrice },
+    state.wifi && { name: `Wi-Fi модуль (${units} шт)`, val: wifiPrice },
+    { name: 'ИТОГО', val: total, isTotal: true }
+  ].filter(Boolean);
+
+  document.getElementById('breakdownList').innerHTML = rows.map(r => `
+    <div class="breakdown-row ${r.isTotal ? 'total-row' : ''}">
+      <span class="name">${r.name}</span>
+      <span class="val">${formatNum(r.val)} ₽</span>
+    </div>`).join('');
+
+  // Progress
+  let filled = 0;
+  if (state.objectType) filled += 20;
+  if (state.area > 10) filled += 20;
+  if (state.systemType) filled += 20;
+  if (state.brandTier) filled += 20;
+  if (state.qty >= 1) filled += 20;
+  document.getElementById('progressFill').style.width = filled + '%';
+}
+
+function formatNum(n) { return Math.round(n).toLocaleString('ru-RU'); }
+
+// Option buttons
+document.querySelectorAll('.option-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const group = btn.dataset.group;
+    document.querySelectorAll(`.option-btn[data-group="${group}"]`).forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    state[group] = btn.dataset.value;
+    calc();
+  });
+});
+
+// Ranges
+document.getElementById('areaRange').addEventListener('input', function() {
+  state.area = +this.value;
+  document.getElementById('areaValue').textContent = this.value;
+  calc();
+});
+document.getElementById('qtyRange').addEventListener('input', function() {
+  state.qty = +this.value;
+  document.getElementById('qtyValue').textContent = this.value;
+  calc();
+});
+
+// Checkboxes
+['optInstall','optMaintenance','optDesign','optWifi'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('change', () => {
+    const key = id.replace('opt','').toLowerCase().replace('install','install').replace('maintenance','maintenance').replace('design','design').replace('wifi','wifi');
+    state[key.charAt(0).toLowerCase() + key.slice(1)] = el.checked;
+    const label = el.closest('.checkbox-item');
+    if (label) label.classList.toggle('checked', el.checked);
+    calc();
+  });
+  if (el.checked) el.closest('.checkbox-item')?.classList.add('checked');
+});
+
+calc();
+</script>
+</body>
+</html>

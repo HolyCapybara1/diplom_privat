@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Каталог товаров — Климат-Инарс</title>
+  <meta name="description" content="Каталог кондиционеров и вентиляционного оборудования. Сплит-системы, кассетные, канальные кондиционеры, рекуператоры.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/catalog.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-top">
+    <div class="container">
+      <div>ООО «Климат-Инарс» — профессиональные системы кондиционирования</div>
+      <div class="header-top-contacts">
+        <a href="tel:+74951234567">📞 +7 (495) 123-45-67</a>
+        <a href="mailto:info@klimat-inars.ru">✉ info@klimat-inars.ru</a>
+        <span>Пн–Пт: 9:00–18:00</span>
+      </div>
+    </div>
+  </div>
+  <div class="header-main">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">❄</div>
+        <div class="logo-text">
+          <span class="logo-name">Климат-Инарс</span>
+          <span class="logo-tagline">Кондиционирование и вентиляция</span>
+        </div>
+      </a>
+      <nav class="nav">
+        <ul>
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="catalog.html">Каталог</a></li>
+          <li><a href="services.html">Услуги</a></li>
+          <li><a href="calculator.html">Калькулятор</a></li>
+          <li><a href="about.html">О нас</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a href="cart.html" class="cart-btn">
+          🛒 Корзина
+          <span class="cart-count hidden">0</span>
+        </a>
+        <button class="burger" id="burgerBtn" aria-label="Меню">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-close" id="mobileNavClose">✕</button>
+  <ul>
+    <li><a href="index.html">🏠 Главная</a></li>
+    <li><a href="catalog.html">📦 Каталог</a></li>
+    <li><a href="services.html">🔧 Услуги</a></li>
+    <li><a href="calculator.html">🧮 Калькулятор</a></li>
+    <li><a href="about.html">ℹ О нас</a></li>
+    <li><a href="contacts.html">📍 Контакты</a></li>
+    <li><a href="cart.html">🛒 Корзина</a></li>
+  </ul>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <div class="container">
+    <a href="index.html">Главная</a> <span>›</span> Каталог
+  </div>
+</div>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="container">
+    <h1>Каталог оборудования</h1>
+    <p>Кондиционеры, системы вентиляции и климатическое оборудование</p>
+  </div>
+</div>
+
+<!-- CATALOG -->
+<section class="section section-light">
+  <div class="container">
+
+    <!-- Category tabs -->
+    <div class="category-tabs">
+      <button class="cat-tab active" data-cat="all">Все товары</button>
+      <button class="cat-tab" data-cat="split">❄ Сплит-системы</button>
+      <button class="cat-tab" data-cat="cassette">🏢 Кассетные</button>
+      <button class="cat-tab" data-cat="duct">🌫 Канальные</button>
+      <button class="cat-tab" data-cat="ventilation">💨 Вентиляция</button>
+    </div>
+
+    <!-- Mobile filters toggle -->
+    <button class="filters-toggle" id="filtersToggle">
+      <span>⚙</span> Фильтры
+    </button>
+
+    <div class="catalog-layout">
+
+      <!-- SIDEBAR FILTERS -->
+      <aside class="filters-sidebar" id="filtersSidebar">
+        <div class="filters-header">
+          <h3>Фильтры</h3>
+          <span class="filters-reset" id="filtersReset">Сбросить</span>
+        </div>
+
+        <!-- Price -->
+        <div class="filter-group">
+          <h4>Цена, ₽</h4>
+          <div class="price-range">
+            <div class="price-inputs">
+              <input type="number" id="priceMin" class="form-control" placeholder="от" min="0">
+              <span class="price-sep">—</span>
+              <input type="number" id="priceMax" class="form-control" placeholder="до" min="0">
+            </div>
+          </div>
+        </div>
+
+        <!-- Brand -->
+        <div class="filter-group">
+          <h4>Бренд</h4>
+          <label class="filter-option">
+            <input type="checkbox" class="brand-check" value="Samsung">
+            <label>Samsung</label> <span class="filter-count">(3)</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" class="brand-check" value="Daikin">
+            <label>Daikin</label> <span class="filter-count">(3)</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" class="brand-check" value="Mitsubishi Electric">
+            <label>Mitsubishi Electric</label> <span class="filter-count">(3)</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" class="brand-check" value="Panasonic">
+            <label>Panasonic</label> <span class="filter-count">(1)</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" class="brand-check" value="LG">
+            <label>LG</label> <span class="filter-count">(1)</span>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" class="brand-check" value="Haier">
+            <label>Haier</label> <span class="filter-count">(3)</span>
+          </label>
+        </div>
+
+        <!-- Power -->
+        <div class="filter-group">
+          <h4>Мощность</h4>
+          <label class="filter-option">
+            <input type="checkbox" disabled>
+            <label>до 3 кВт</label>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" disabled>
+            <label>3–6 кВт</label>
+          </label>
+          <label class="filter-option">
+            <input type="checkbox" disabled>
+            <label>свыше 6 кВт</label>
+          </label>
+        </div>
+
+        <div class="filter-group" style="padding-bottom:1.25rem">
+          <a href="catalog.html" class="btn btn-primary" style="width:100%;justify-content:center">Показать</a>
+        </div>
+      </aside>
+
+      <!-- MAIN CATALOG -->
+      <div class="catalog-main">
+        <!-- Toolbar -->
+        <div class="catalog-toolbar">
+          <span class="catalog-count" id="productsCount">Загрузка...</span>
+          <div class="catalog-sort">
+            <span class="sort-label">Сортировка:</span>
+            <select class="sort-select" id="sortSelect">
+              <option value="default">По умолчанию</option>
+              <option value="price-asc">Цена: по возрастанию</option>
+              <option value="price-desc">Цена: по убыванию</option>
+              <option value="name">По названию</option>
+            </select>
+            <div class="view-toggle">
+              <button class="view-btn active" id="gridViewBtn" title="Сетка">⊞</button>
+              <button class="view-btn" id="listViewBtn" title="Список">≡</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="catalog-grid" id="productsGrid">
+          <div style="text-align:center;padding:3rem;color:var(--gray);grid-column:1/-1">Загрузка товаров...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section section-blue">
+  <div class="container">
+    <div class="cta-banner">
+      <h2>Не нашли нужное оборудование?</h2>
+      <p>Мы поможем подобрать систему под ваши требования. Свяжитесь с нами!</p>
+      <a href="contacts.html" class="btn btn-white btn-lg">Связаться с нами</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <div class="logo-icon">❄</div>
+            <div class="logo-text">
+              <span class="logo-name">Климат-Инарс</span>
+              <span class="logo-tagline">Кондиционирование и вентиляция</span>
+            </div>
+          </a>
+          <p>Профессиональные системы климат-контроля для дома и бизнеса с 2010 года.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Каталог</h4>
+          <ul>
+            <li><a href="catalog.html">Сплит-системы</a></li>
+            <li><a href="catalog.html">Кассетные</a></li>
+            <li><a href="catalog.html">Канальные</a></li>
+            <li><a href="catalog.html">Вентиляция</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Компания</h4>
+          <ul>
+            <li><a href="about.html">О нас</a></li>
+            <li><a href="services.html">Услуги</a></li>
+            <li><a href="contacts.html">Контакты</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Контакты</h4>
+          <div class="footer-contact-item"><span class="icon">📞</span><span>+7 (495) 123-45-67</span></div>
+          <div class="footer-contact-item"><span class="icon">✉</span><span>info@klimat-inars.ru</span></div>
+          <div class="footer-contact-item"><span class="icon">🕐</span><span>Пн–Пт: 9:00–18:00</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© 2025 ООО «Климат-Инарс». Все права защищены.</span>
+      <span>ИНН 7701234567</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script src="js/catalog.js"></script>
+<script>
+  // Apply URL category param on load
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const cat = params.get('cat');
+    if (cat) {
+      const tab = document.querySelector(`.cat-tab[data-cat="${cat}"]`);
+      if (tab) tab.click();
+    }
+  });
+</script>
+</body>
+</html>

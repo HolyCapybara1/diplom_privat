@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>О компании — Климат-Инарс</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .about-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+    .about-intro-visual {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: var(--radius-lg); padding: 3rem 2rem;
+      color: var(--white); text-align: center;
+    }
+    .about-intro-visual .big-num { font-size: 4rem; font-weight: 900; line-height: 1; }
+    .about-intro-visual p { opacity: 0.85; margin-top: 0.5rem; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+    .stat-card { background: var(--white); border-radius: var(--radius-lg); padding: 2rem 1rem; text-align: center; box-shadow: var(--shadow); }
+    .stat-card .num { font-size: 2.5rem; font-weight: 800; color: var(--accent); }
+    .stat-card .label { font-size: 0.88rem; color: var(--text-light); margin-top: 0.3rem; }
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; }
+    .team-card { text-align: center; background: var(--white); border-radius: var(--radius-lg); padding: 2rem 1.5rem; box-shadow: var(--shadow); }
+    .team-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--primary)); display: flex; align-items: center; justify-content: center; color: var(--white); font-size: 1.8rem; font-weight: 700; margin: 0 auto 1rem; }
+    .team-card h4 { color: var(--primary); margin-bottom: 0.25rem; }
+    .team-card .role { font-size: 0.82rem; color: var(--accent); font-weight: 600; margin-bottom: 0.5rem; }
+    .team-card p { font-size: 0.82rem; color: var(--text-light); }
+    .partners-logos { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; align-items: center; }
+    .partner-badge {
+      background: var(--white); border: 2px solid var(--gray-light); border-radius: var(--radius);
+      padding: 0.85rem 1.75rem; font-weight: 700; color: var(--primary); font-size: 1.05rem;
+      transition: var(--transition);
+    }
+    .partner-badge:hover { border-color: var(--accent); color: var(--accent); }
+    .cert-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+    .cert-item { display: flex; gap: 1rem; padding: 1.25rem; background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .cert-icon { font-size: 2rem; flex-shrink: 0; }
+    .cert-item h4 { color: var(--primary); margin-bottom: 0.25rem; font-size: 0.95rem; }
+    .cert-item p { font-size: 0.82rem; color: var(--text-light); }
+    @media (max-width: 768px) {
+      .about-intro { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-top">
+    <div class="container">
+      <div>ООО «Климат-Инарс» — профессиональные системы кондиционирования</div>
+      <div class="header-top-contacts">
+        <a href="tel:+74951234567">📞 +7 (495) 123-45-67</a>
+        <a href="mailto:info@klimat-inars.ru">✉ info@klimat-inars.ru</a>
+        <span>Пн–Пт: 9:00–18:00</span>
+      </div>
+    </div>
+  </div>
+  <div class="header-main">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">❄</div>
+        <div class="logo-text">
+          <span class="logo-name">Климат-Инарс</span>
+          <span class="logo-tagline">Кондиционирование и вентиляция</span>
+        </div>
+      </a>
+      <nav class="nav">
+        <ul>
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="catalog.html">Каталог</a></li>
+          <li><a href="services.html">Услуги</a></li>
+          <li><a href="calculator.html">Калькулятор</a></li>
+          <li><a href="about.html">О нас</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a href="cart.html" class="cart-btn">
+          🛒 Корзина
+          <span class="cart-count hidden">0</span>
+        </a>
+        <button class="burger" id="burgerBtn" aria-label="Меню">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-close" id="mobileNavClose">✕</button>
+  <ul>
+    <li><a href="index.html">🏠 Главная</a></li>
+    <li><a href="catalog.html">📦 Каталог</a></li>
+    <li><a href="services.html">🔧 Услуги</a></li>
+    <li><a href="calculator.html">🧮 Калькулятор</a></li>
+    <li><a href="about.html">ℹ О нас</a></li>
+    <li><a href="contacts.html">📍 Контакты</a></li>
+    <li><a href="cart.html">🛒 Корзина</a></li>
+  </ul>
+</nav>
+
+<div class="breadcrumb">
+  <div class="container">
+    <a href="index.html">Главная</a> <span>›</span> О компании
+  </div>
+</div>
+
+<div class="page-hero">
+  <div class="container">
+    <h1>О компании</h1>
+    <p>ООО «Климат-Инарс» — ваш надёжный партнёр в создании комфортного климата</p>
+  </div>
+</div>
+
+<!-- ABOUT INTRO -->
+<section class="section">
+  <div class="container">
+    <div class="about-intro">
+      <div>
+        <h2>Профессиональный климат-контроль с 2010 года</h2>
+        <p style="color:var(--text-light);margin:1rem 0">ООО «Климат-Инарс» — специализированная компания по продаже, проектированию, монтажу и обслуживанию систем кондиционирования и вентиляции в Москве и Московской области.</p>
+        <p style="color:var(--text-light);margin-bottom:1.5rem">За 15 лет работы мы реализовали более 2 000 проектов — от установки одного кондиционера в квартире до комплексных систем климат-контроля в торговых центрах и промышленных объектах.</p>
+        <div style="display:flex;flex-direction:column;gap:0.75rem">
+          <div style="display:flex;gap:0.75rem;align-items:flex-start">
+            <span style="color:var(--accent);font-size:1.2rem;flex-shrink:0">✓</span>
+            <span>Официальный дилер Samsung, Daikin, Mitsubishi Electric, Panasonic, LG, Haier</span>
+          </div>
+          <div style="display:flex;gap:0.75rem;align-items:flex-start">
+            <span style="color:var(--accent);font-size:1.2rem;flex-shrink:0">✓</span>
+            <span>Штат из 45 сертифицированных специалистов по монтажу и обслуживанию</span>
+          </div>
+          <div style="display:flex;gap:0.75rem;align-items:flex-start">
+            <span style="color:var(--accent);font-size:1.2rem;flex-shrink:0">✓</span>
+            <span>Собственный сервисный центр с гарантией на все виды работ</span>
+          </div>
+          <div style="display:flex;gap:0.75rem;align-items:flex-start">
+            <span style="color:var(--accent);font-size:1.2rem;flex-shrink:0">✓</span>
+            <span>Работаем по официальным договорам с НДС и полным пакетом документов</span>
+          </div>
+        </div>
+      </div>
+      <div class="about-intro-visual">
+        <div class="big-num">15</div>
+        <p>лет на рынке климатического оборудования</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem">
+          <div><div style="font-size:2rem;font-weight:800">2 000+</div><div style="opacity:0.7;font-size:0.82rem">объектов</div></div>
+          <div><div style="font-size:2rem;font-weight:800">45+</div><div style="opacity:0.7;font-size:0.82rem">специалистов</div></div>
+          <div><div style="font-size:2rem;font-weight:800">98%</div><div style="opacity:0.7;font-size:0.82rem">довольных клиентов</div></div>
+          <div><div style="font-size:2rem;font-weight:800">24/7</div><div style="opacity:0.7;font-size:0.82rem">поддержка</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="section section-light">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="num">2 000+</div>
+        <div class="label">Реализованных проектов</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">15</div>
+        <div class="label">Лет опыта</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">45+</div>
+        <div class="label">Специалистов в штате</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">98%</div>
+        <div class="label">Положительных отзывов</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Наша команда</h2>
+    <p class="section-sub">Профессионалы с многолетним опытом</p>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar">АИ</div>
+        <h4>Алексей Иванов</h4>
+        <div class="role">Генеральный директор</div>
+        <p>Основатель компании. 20 лет в отрасли. Эксперт по промышленным системам.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">МП</div>
+        <h4>Марина Петрова</h4>
+        <div class="role">Главный инженер</div>
+        <p>Руководит проектным отделом. Специалист по вентиляционным системам.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">ДС</div>
+        <h4>Дмитрий Сидоров</h4>
+        <div class="role">Старший монтажник</div>
+        <p>Сертификат Daikin. Более 500 выполненных монтажных объектов.</p>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar">НК</div>
+        <h4>Наталья Козлова</h4>
+        <div class="role">Менеджер по продажам</div>
+        <p>Поможет подобрать оптимальное решение под любой бюджет и задачу.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<section class="section section-light">
+  <div class="container">
+    <h2 class="section-title">Официальные партнёры</h2>
+    <p class="section-sub">Работаем с ведущими мировыми производителями</p>
+    <div class="partners-logos">
+      <div class="partner-badge">Samsung</div>
+      <div class="partner-badge">Daikin</div>
+      <div class="partner-badge">Mitsubishi Electric</div>
+      <div class="partner-badge">Panasonic</div>
+      <div class="partner-badge">LG</div>
+      <div class="partner-badge">Haier</div>
+      <div class="partner-badge">Systemair</div>
+      <div class="partner-badge">Vents</div>
+      <div class="partner-badge">Ballu</div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATES -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Лицензии и сертификаты</h2>
+    <p class="section-sub">Работаем официально и прозрачно</p>
+    <div class="cert-list">
+      <div class="cert-item">
+        <div class="cert-icon">📜</div>
+        <div>
+          <h4>СРО строительства</h4>
+          <p>Свидетельство о допуске к строительным работам, связанным с инженерными системами зданий</p>
+        </div>
+      </div>
+      <div class="cert-item">
+        <div class="cert-icon">🏆</div>
+        <div>
+          <h4>Авторизация Daikin</h4>
+          <p>Авторизованный сервисный партнёр Daikin с правом гарантийного обслуживания</p>
+        </div>
+      </div>
+      <div class="cert-item">
+        <div class="cert-icon">🏆</div>
+        <div>
+          <h4>Авторизация Samsung</h4>
+          <p>Официальный дилер и авторизованный монтажник оборудования Samsung HVAC</p>
+        </div>
+      </div>
+      <div class="cert-item">
+        <div class="cert-icon">📋</div>
+        <div>
+          <h4>ISO 9001:2015</h4>
+          <p>Система менеджмента качества — гарантия стабильного высокого уровня работ</p>
+        </div>
+      </div>
+      <div class="cert-item">
+        <div class="cert-icon">⚡</div>
+        <div>
+          <h4>Допуск к электроработам</h4>
+          <p>Лицензия на выполнение электромонтажных работ до 1000 В</p>
+        </div>
+      </div>
+      <div class="cert-item">
+        <div class="cert-icon">🛡️</div>
+        <div>
+          <h4>Членство в АПИК</h4>
+          <p>Ассоциация производителей и инсталляторов климатической техники России</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section section-blue">
+  <div class="container">
+    <div class="cta-banner">
+      <h2>Доверьте климат вашего объекта профессионалам</h2>
+      <p>Бесплатная консультация и выезд замерщика в день обращения</p>
+      <a href="contacts.html" class="btn btn-white btn-lg">Связаться с нами</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <div class="logo-icon">❄</div>
+            <div class="logo-text">
+              <span class="logo-name">Климат-Инарс</span>
+              <span class="logo-tagline">Кондиционирование и вентиляция</span>
+            </div>
+          </a>
+          <p>Профессиональные системы климат-контроля с 2010 года.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Компания</h4>
+          <ul>
+            <li><a href="about.html">О нас</a></li>
+            <li><a href="services.html">Услуги</a></li>
+            <li><a href="contacts.html">Контакты</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Каталог</h4>
+          <ul>
+            <li><a href="catalog.html">Все товары</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Контакты</h4>
+          <div class="footer-contact-item"><span class="icon">📞</span><span>+7 (495) 123-45-67</span></div>
+          <div class="footer-contact-item"><span class="icon">✉</span><span>info@klimat-inars.ru</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© 2025 ООО «Климат-Инарс». Все права защищены.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Климат-Инарс — Кондиционирование и вентиляция</title>
+  <meta name="description" content="ООО Климат-Инарс — продажа и установка систем кондиционирования и вентиляции. Широкий каталог, профессиональный монтаж, гарантия.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-top">
+    <div class="container">
+      <div>ООО «Климат-Инарс» — профессиональные системы кондиционирования</div>
+      <div class="header-top-contacts">
+        <a href="tel:+74951234567">📞 +7 (495) 123-45-67</a>
+        <a href="mailto:info@klimat-inars.ru">✉ info@klimat-inars.ru</a>
+        <span>Пн–Пт: 9:00–18:00</span>
+      </div>
+    </div>
+  </div>
+  <div class="header-main">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">❄</div>
+        <div class="logo-text">
+          <span class="logo-name">Климат-Инарс</span>
+          <span class="logo-tagline">Кондиционирование и вентиляция</span>
+        </div>
+      </a>
+      <nav class="nav">
+        <ul>
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="catalog.html">Каталог</a></li>
+          <li><a href="services.html">Услуги</a></li>
+          <li><a href="calculator.html">Калькулятор</a></li>
+          <li><a href="about.html">О нас</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a href="cart.html" class="cart-btn">
+          🛒 Корзина
+          <span class="cart-count hidden">0</span>
+        </a>
+        <button class="burger" id="burgerBtn" aria-label="Меню">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-close" id="mobileNavClose">✕</button>
+  <ul>
+    <li><a href="index.html">🏠 Главная</a></li>
+    <li><a href="catalog.html">📦 Каталог</a></li>
+    <li><a href="services.html">🔧 Услуги</a></li>
+    <li><a href="calculator.html">🧮 Калькулятор</a></li>
+    <li><a href="about.html">ℹ О нас</a></li>
+    <li><a href="contacts.html">📍 Контакты</a></li>
+    <li><a href="cart.html">🛒 Корзина</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1>Комфортный климат в вашем <span>доме и офисе</span></h1>
+        <p>Продажа, монтаж и обслуживание систем кондиционирования и вентиляции. Работаем с 2010 года, более 2 000 объектов.</p>
+        <div class="hero-actions">
+          <a href="catalog.html" class="btn btn-white btn-lg">Смотреть каталог</a>
+          <a href="services.html" class="btn btn-outline btn-lg" style="border-color:rgba(255,255,255,0.6);color:#fff">Наши услуги</a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat"><div class="stat-num">2 000+</div><div class="stat-label">Объектов</div></div>
+          <div class="stat"><div class="stat-num">15</div><div class="stat-label">Лет опыта</div></div>
+          <div class="stat"><div class="stat-num">50+</div><div class="stat-label">Брендов</div></div>
+          <div class="stat"><div class="stat-num">24/7</div><div class="stat-label">Поддержка</div></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card">
+          <h4>Популярный выбор</h4>
+          <div>Samsung WindFree Elite 2.5 кВт</div>
+          <div class="price">45 900 ₽ <span>с установкой</span></div>
+          <div class="hero-card-features">
+            <span class="feature-tag">Инвертор</span>
+            <span class="feature-tag">Wi-Fi</span>
+            <span class="feature-tag">A+++</span>
+          </div>
+        </div>
+        <div class="hero-card">
+          <h4>Акция — монтаж в подарок</h4>
+          <div>При заказе от 2 единиц</div>
+          <div class="price">Бесплатно <span>стандартный монтаж</span></div>
+          <div class="hero-card-features">
+            <span class="feature-tag">До 31 декабря</span>
+            <span class="feature-tag">Гарантия 2 года</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Почему выбирают Климат-Инарс</h2>
+    <p class="section-sub">Профессиональный подход на каждом этапе</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <h3>Официальный дилер</h3>
+        <p>Авторизованный дилер Samsung, Daikin, Mitsubishi, Panasonic. Оригинальное оборудование с гарантией производителя.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔧</div>
+        <h3>Собственные монтажники</h3>
+        <p>Штатные сертифицированные специалисты. Гарантия на работы 2 года. Аккуратный монтаж без лишнего шума.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Быстрая установка</h3>
+        <p>Монтаж в день обращения или в удобное время. Выезд в течение 24 часов по Москве и области.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💰</div>
+        <h3>Прозрачные цены</h3>
+        <p>Фиксированные цены без скрытых доплат. Бесплатный выезд замерщика. Смета до начала работ.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📋</div>
+        <h3>Проектирование</h3>
+        <p>Разработка проектов вентиляции и кондиционирования для жилых и коммерческих объектов любой сложности.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3>Гарантия и сервис</h3>
+        <p>Гарантия до 5 лет на оборудование. Регулярное техническое обслуживание. Оперативный выезд по гарантии.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED PRODUCTS -->
+<section class="section section-light">
+  <div class="container">
+    <h2 class="section-title">Популярные товары</h2>
+    <p class="section-sub">Топ продаж этого сезона</p>
+    <div class="products-grid" id="featuredProducts"></div>
+    <div style="text-align:center;margin-top:2.5rem">
+      <a href="catalog.html" class="btn btn-primary btn-lg">Весь каталог →</a>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES PREVIEW -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Наши услуги</h2>
+    <p class="section-sub">Полный цикл — от подбора до обслуживания</p>
+    <div class="services-list">
+      <div class="service-item">
+        <div class="service-item-icon">🔧</div>
+        <h3>Монтаж кондиционеров</h3>
+        <p>Установка настенных, кассетных и канальных систем. Все виды работ под ключ: от разметки до пуско-наладки.</p>
+        <div class="service-price">от 8 000 ₽</div>
+      </div>
+      <div class="service-item">
+        <div class="service-item-icon">🛠️</div>
+        <h3>Техническое обслуживание</h3>
+        <p>Регулярная чистка и профилактика оборудования. Продление срока службы и поддержание эффективности.</p>
+        <div class="service-price">от 3 500 ₽</div>
+      </div>
+      <div class="service-item">
+        <div class="service-item-icon">📐</div>
+        <h3>Проектирование систем</h3>
+        <p>Разработка проектной документации для жилых комплексов, офисов, торговых центров и промышленных объектов.</p>
+        <div class="service-price">от 15 000 ₽</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:2rem">
+      <a href="services.html" class="btn btn-outline">Все услуги и цены →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section section-blue">
+  <div class="container">
+    <div class="cta-banner">
+      <h2>Нужна консультация по подбору оборудования?</h2>
+      <p>Наши специалисты помогут выбрать оптимальную систему под ваши задачи и бюджет</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+        <a href="contacts.html" class="btn btn-white btn-lg">Получить консультацию</a>
+        <a href="calculator.html" class="btn btn-outline btn-lg" style="border-color:rgba(255,255,255,0.5);color:#fff">Рассчитать стоимость</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Отзывы клиентов</h2>
+    <p class="section-sub">Что говорят те, кто уже работал с нами</p>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">«Заказали установку трёх сплит-систем в офис. Монтажники приехали вовремя, сделали аккуратно, всё работает отлично. Рекомендую!»</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">АП</div>
+          <div>
+            <div class="testimonial-name">Алексей Петров</div>
+            <div class="testimonial-role">Директор ООО «АльфаТех»</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">«Отличный выбор оборудования, грамотные консультанты. Помогли подобрать рекуператор для квартиры, всё объяснили про установку.»</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">МС</div>
+          <div>
+            <div class="testimonial-name">Мария Смирнова</div>
+            <div class="testimonial-role">Частный клиент</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">«Провели проектирование вентиляции для нашего ресторана. Работа выполнена профессионально, документация в полном порядке.»</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">ИК</div>
+          <div>
+            <div class="testimonial-name">Иван Козлов</div>
+            <div class="testimonial-role">Управляющий рестораном</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <div class="logo-icon">❄</div>
+            <div class="logo-text">
+              <span class="logo-name">Климат-Инарс</span>
+              <span class="logo-tagline">Кондиционирование и вентиляция</span>
+            </div>
+          </a>
+          <p>Профессиональные системы климат-контроля для дома и бизнеса. Продажа, монтаж, обслуживание с 2010 года.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Каталог</h4>
+          <ul>
+            <li><a href="catalog.html?cat=split">Сплит-системы</a></li>
+            <li><a href="catalog.html?cat=cassette">Кассетные</a></li>
+            <li><a href="catalog.html?cat=duct">Канальные</a></li>
+            <li><a href="catalog.html?cat=ventilation">Вентиляция</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Услуги</h4>
+          <ul>
+            <li><a href="services.html">Монтаж</a></li>
+            <li><a href="services.html">Техобслуживание</a></li>
+            <li><a href="services.html">Ремонт</a></li>
+            <li><a href="services.html">Проектирование</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Контакты</h4>
+          <div class="footer-contact-item"><span class="icon">📞</span><span>+7 (495) 123-45-67</span></div>
+          <div class="footer-contact-item"><span class="icon">✉</span><span>info@klimat-inars.ru</span></div>
+          <div class="footer-contact-item"><span class="icon">📍</span><span>Москва, ул. Примерная, д. 1</span></div>
+          <div class="footer-contact-item"><span class="icon">🕐</span><span>Пн–Пт: 9:00–18:00</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© 2025 ООО «Климат-Инарс». Все права защищены.</span>
+      <span>ИНН 7701234567 | ОГРН 1037701234567</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('featuredProducts');
+    const featured = PRODUCTS.filter(p => ['hot','new'].includes(p.badgeType) || [1,3,5,12,13].includes(p.id)).slice(0, 6);
+    container.innerHTML = featured.map(p => renderProductCard(p)).join('');
+    attachCartButtons(container);
+  });
+</script>
+</body>
+</html>

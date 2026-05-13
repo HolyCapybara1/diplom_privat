@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Услуги — Климат-Инарс</title>
+  <meta name="description" content="Монтаж, обслуживание, ремонт и проектирование систем кондиционирования и вентиляции. Цены и условия.">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .services-full-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; }
+    .service-card {
+      background: var(--white); border-radius: var(--radius-lg); overflow: hidden;
+      box-shadow: var(--shadow); border: 1px solid var(--gray-light); transition: var(--transition);
+    }
+    .service-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+    .service-card-header {
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      padding: 1.75rem; color: var(--white); text-align: center;
+    }
+    .service-card-header .icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .service-card-header h3 { font-size: 1.1rem; }
+    .service-card-body { padding: 1.5rem; }
+    .service-card-body p { color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem; }
+    .service-includes { list-style: none; }
+    .service-includes li { display: flex; gap: 0.5rem; align-items: flex-start; padding: 0.3rem 0; font-size: 0.88rem; }
+    .service-includes li::before { content: '✓'; color: #27ae60; font-weight: 700; flex-shrink: 0; }
+    .service-price-block { padding: 1.25rem 1.5rem; border-top: 1px solid var(--gray-light); display: flex; justify-content: space-between; align-items: center; }
+    .service-price-block .price { font-size: 1.2rem; font-weight: 800; color: var(--accent); }
+    .price-table { width: 100%; border-collapse: collapse; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); }
+    .price-table th { background: var(--primary); color: var(--white); padding: 1rem 1.25rem; text-align: left; font-size: 0.9rem; }
+    .price-table td { padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--gray-light); font-size: 0.9rem; }
+    .price-table tr:last-child td { border-bottom: none; }
+    .price-table tr:nth-child(even) td { background: var(--light); }
+    .price-table .price-col { font-weight: 700; color: var(--accent); white-space: nowrap; }
+    .process-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; counter-reset: steps; }
+    .process-step { text-align: center; padding: 1.5rem 1rem; background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); position: relative; counter-increment: steps; }
+    .process-step::before { content: counter(steps); position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--accent); color: var(--white); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; }
+    .process-step .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .process-step h4 { color: var(--primary); margin-bottom: 0.3rem; }
+    .process-step p { font-size: 0.82rem; color: var(--text-light); }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-top">
+    <div class="container">
+      <div>ООО «Климат-Инарс» — профессиональные системы кондиционирования</div>
+      <div class="header-top-contacts">
+        <a href="tel:+74951234567">📞 +7 (495) 123-45-67</a>
+        <a href="mailto:info@klimat-inars.ru">✉ info@klimat-inars.ru</a>
+        <span>Пн–Пт: 9:00–18:00</span>
+      </div>
+    </div>
+  </div>
+  <div class="header-main">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">❄</div>
+        <div class="logo-text">
+          <span class="logo-name">Климат-Инарс</span>
+          <span class="logo-tagline">Кондиционирование и вентиляция</span>
+        </div>
+      </a>
+      <nav class="nav">
+        <ul>
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="catalog.html">Каталог</a></li>
+          <li><a href="services.html">Услуги</a></li>
+          <li><a href="calculator.html">Калькулятор</a></li>
+          <li><a href="about.html">О нас</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a href="cart.html" class="cart-btn">
+          🛒 Корзина
+          <span class="cart-count hidden">0</span>
+        </a>
+        <button class="burger" id="burgerBtn" aria-label="Меню">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-close" id="mobileNavClose">✕</button>
+  <ul>
+    <li><a href="index.html">🏠 Главная</a></li>
+    <li><a href="catalog.html">📦 Каталог</a></li>
+    <li><a href="services.html">🔧 Услуги</a></li>
+    <li><a href="calculator.html">🧮 Калькулятор</a></li>
+    <li><a href="about.html">ℹ О нас</a></li>
+    <li><a href="contacts.html">📍 Контакты</a></li>
+    <li><a href="cart.html">🛒 Корзина</a></li>
+  </ul>
+</nav>
+
+<div class="breadcrumb">
+  <div class="container">
+    <a href="index.html">Главная</a> <span>›</span> Услуги
+  </div>
+</div>
+
+<div class="page-hero">
+  <div class="container">
+    <h1>Наши услуги</h1>
+    <p>Полный комплекс работ по кондиционированию и вентиляции</p>
+  </div>
+</div>
+
+<!-- SERVICES CARDS -->
+<section class="section section-light">
+  <div class="container">
+    <h2 class="section-title">Все услуги</h2>
+    <p class="section-sub">Выберите нужную услугу или закажите комплекс работ</p>
+    <div class="services-full-grid">
+
+      <div class="service-card">
+        <div class="service-card-header">
+          <div class="icon">🔧</div>
+          <h3>Монтаж сплит-системы</h3>
+        </div>
+        <div class="service-card-body">
+          <p>Профессиональная установка настенных кондиционеров любых марок. Монтаж выполняют сертифицированные специалисты.</p>
+          <ul class="service-includes">
+            <li>Разметка и установка кронштейнов</li>
+            <li>Прокладка межблочной трассы</li>
+            <li>Вакуумирование системы</li>
+            <li>Пуско-наладка и проверка</li>
+            <li>Гарантия на работы 2 года</li>
+          </ul>
+        </div>
+        <div class="service-price-block">
+          <span class="price">от 8 000 ₽</span>
+          <a href="contacts.html" class="btn btn-primary btn-sm">Заказать</a>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-card-header">
+          <div class="icon">🏗️</div>
+          <h3>Монтаж кассетного/канального</h3>
+        </div>
+        <div class="service-card-body">
+          <p>Установка полупромышленных систем в офисах, магазинах, ресторанах. Проектирование воздуховодов.</p>
+          <ul class="service-includes">
+            <li>Технический осмотр объекта</li>
+            <li>Проектирование размещения</li>
+            <li>Монтаж внутреннего блока</li>
+            <li>Прокладка воздуховодов</li>
+            <li>Настройка и сдача объекта</li>
+          </ul>
+        </div>
+        <div class="service-price-block">
+          <span class="price">от 25 000 ₽</span>
+          <a href="contacts.html" class="btn btn-primary btn-sm">Заказать</a>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-card-header">
+          <div class="icon">🛠️</div>
+          <h3>Техническое обслуживание</h3>
+        </div>
+        <div class="service-card-body">
+          <p>Регулярная профилактика продлевает срок службы оборудования и снижает потребление энергии на 15–20%.</p>
+          <ul class="service-includes">
+            <li>Чистка фильтров и испарителя</li>
+            <li>Мойка наружного блока</li>
+            <li>Проверка давления фреона</li>
+            <li>Диагностика электрики</li>
+            <li>Акт выполненных работ</li>
+          </ul>
+        </div>
+        <div class="service-price-block">
+          <span class="price">от 3 500 ₽</span>
+          <a href="contacts.html" class="btn btn-primary btn-sm">Заказать</a>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-card-header">
+          <div class="icon">❄️</div>
+          <h3>Заправка фреоном</h3>
+        </div>
+        <div class="service-card-body">
+          <p>Дозаправка или полная замена хладагента. Поиск и устранение утечек. Работаем со всеми типами фреона.</p>
+          <ul class="service-includes">
+            <li>Обнаружение утечки</li>
+            <li>Устранение причины утечки</li>
+            <li>Вакуумирование системы</li>
+            <li>Заправка фреоном R32/R410A</li>
+            <li>Контроль давления</li>
+          </ul>
+        </div>
+        <div class="service-price-block">
+          <span class="price">от 2 000 ₽</span>
+          <a href="contacts.html" class="btn btn-primary btn-sm">Заказать</a>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-card-header">
+          <div class="icon">📐</div>
+          <h3>Проектирование системы</h3>
+        </div>
+        <div class="service-card-body">
+          <p>Разработка проектов вентиляции и кондиционирования для объектов любой сложности. Полный пакет документов.</p>
+          <ul class="service-includes">
+            <li>Обследование объекта</li>
+            <li>Тепловой расчёт помещений</li>
+            <li>Подбор оборудования</li>
+            <li>Проектная документация</li>
+            <li>Авторский надзор</li>
+          </ul>
+        </div>
+        <div class="service-price-block">
+          <span class="price">от 15 000 ₽</span>
+          <a href="contacts.html" class="btn btn-primary btn-sm">Заказать</a>
+        </div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-card-header">
+          <div class="icon">🔍</div>
+          <h3>Диагностика и ремонт</h3>
+        </div>
+        <div class="service-card-body">
+          <p>Профессиональная диагностика любых неисправностей. Ремонт плат управления, замена компрессоров, вентиляторов.</p>
+          <ul class="service-includes">
+            <li>Выезд мастера на объект</li>
+            <li>Компьютерная диагностика</li>
+            <li>Поиск неисправности</li>
+            <li>Ремонт или замена деталей</li>
+            <li>Гарантия на ремонт 6 мес.</li>
+          </ul>
+        </div>
+        <div class="service-price-block">
+          <span class="price">от 1 500 ₽</span>
+          <a href="contacts.html" class="btn btn-primary btn-sm">Заказать</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PRICE TABLE -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Прайс-лист монтажных работ</h2>
+    <p class="section-sub">Фиксированные цены без скрытых доплат</p>
+    <div style="overflow-x:auto">
+      <table class="price-table">
+        <thead>
+          <tr>
+            <th>Наименование работы</th>
+            <th>Единица</th>
+            <th class="price-col">Цена</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Монтаж сплит-системы (до 9 000 BTU, трасса 3 м)</td><td>1 шт</td><td class="price-col">8 000 ₽</td></tr>
+          <tr><td>Монтаж сплит-системы (12 000–18 000 BTU, трасса 3 м)</td><td>1 шт</td><td class="price-col">9 500 ₽</td></tr>
+          <tr><td>Монтаж сплит-системы (24 000 BTU и выше, трасса 3 м)</td><td>1 шт</td><td class="price-col">12 000 ₽</td></tr>
+          <tr><td>Дополнительный погонный метр трассы</td><td>1 м.п.</td><td class="price-col">850 ₽</td></tr>
+          <tr><td>Монтаж кассетного блока (до 5 кВт)</td><td>1 шт</td><td class="price-col">25 000 ₽</td></tr>
+          <tr><td>Монтаж канального кондиционера</td><td>1 шт</td><td class="price-col">28 000 ₽</td></tr>
+          <tr><td>Монтаж рекуператора бытового</td><td>1 шт</td><td class="price-col">8 500 ₽</td></tr>
+          <tr><td>Монтаж приточной установки</td><td>1 шт</td><td class="price-col">18 000 ₽</td></tr>
+          <tr><td>Техническое обслуживание (до 12 000 BTU)</td><td>1 шт</td><td class="price-col">3 500 ₽</td></tr>
+          <tr><td>Техническое обслуживание (18 000–24 000 BTU)</td><td>1 шт</td><td class="price-col">4 500 ₽</td></tr>
+          <tr><td>Заправка фреоном R-32 (за 100 г)</td><td>100 г</td><td class="price-col">700 ₽</td></tr>
+          <tr><td>Заправка фреоном R-410A (за 100 г)</td><td>100 г</td><td class="price-col">600 ₽</td></tr>
+          <tr><td>Диагностика (входит в стоимость ремонта)</td><td>1 выезд</td><td class="price-col">1 500 ₽</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:1rem;font-size:0.85rem;color:var(--gray)">* Цены указаны без учёта стоимости материалов (кронштейны, крепёж, кабель). Точная стоимость определяется после выезда замерщика.</p>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="section section-light">
+  <div class="container">
+    <h2 class="section-title">Как мы работаем</h2>
+    <p class="section-sub">Прозрачный процесс от заявки до сдачи объекта</p>
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="icon">📞</div>
+        <h4>Заявка</h4>
+        <p>Оставьте заявку на сайте или позвоните нам. Ответим в течение 15 минут.</p>
+      </div>
+      <div class="process-step">
+        <div class="icon">📐</div>
+        <h4>Замер</h4>
+        <p>Бесплатный выезд специалиста для замера и подбора оборудования.</p>
+      </div>
+      <div class="process-step">
+        <div class="icon">💰</div>
+        <h4>Смета</h4>
+        <p>Подготовим детальную смету с фиксированными ценами без скрытых доплат.</p>
+      </div>
+      <div class="process-step">
+        <div class="icon">📋</div>
+        <h4>Договор</h4>
+        <p>Заключаем официальный договор с гарантийными обязательствами.</p>
+      </div>
+      <div class="process-step">
+        <div class="icon">🔧</div>
+        <h4>Монтаж</h4>
+        <p>Выполняем монтаж в согласованные сроки. Убираем за собой мусор.</p>
+      </div>
+      <div class="process-step">
+        <div class="icon">✅</div>
+        <h4>Сдача</h4>
+        <p>Пуско-наладка, проверка, инструктаж. Выдаём гарантийный талон.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section section-blue">
+  <div class="container">
+    <div class="cta-banner">
+      <h2>Готовы заказать услугу?</h2>
+      <p>Оставьте заявку — мы перезвоним в течение 15 минут и ответим на все вопросы</p>
+      <a href="contacts.html" class="btn btn-white btn-lg">Оставить заявку</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <div class="logo-icon">❄</div>
+            <div class="logo-text">
+              <span class="logo-name">Климат-Инарс</span>
+              <span class="logo-tagline">Кондиционирование и вентиляция</span>
+            </div>
+          </a>
+          <p>Профессиональные системы климат-контроля с 2010 года.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Услуги</h4>
+          <ul>
+            <li><a href="services.html">Монтаж</a></li>
+            <li><a href="services.html">Обслуживание</a></li>
+            <li><a href="services.html">Ремонт</a></li>
+            <li><a href="services.html">Проектирование</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Каталог</h4>
+          <ul>
+            <li><a href="catalog.html">Все товары</a></li>
+            <li><a href="catalog.html">Сплит-системы</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Контакты</h4>
+          <div class="footer-contact-item"><span class="icon">📞</span><span>+7 (495) 123-45-67</span></div>
+          <div class="footer-contact-item"><span class="icon">✉</span><span>info@klimat-inars.ru</span></div>
+          <div class="footer-contact-item"><span class="icon">🕐</span><span>Пн–Пт: 9:00–18:00</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© 2025 ООО «Климат-Инарс». Все права защищены.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
