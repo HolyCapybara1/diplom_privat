@@ -6,6 +6,7 @@
   <title>Калькулятор стоимости — Климат-Инарс</title>
   <meta name="description" content="Онлайн-калькулятор стоимости установки кондиционера и системы вентиляции. Рассчитайте бюджет за 2 минуты.">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/account.css">
   <style>
     .calc-layout { display: grid; grid-template-columns: 1fr 400px; gap: 2rem; align-items: start; }
     .calc-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); overflow: hidden; }
@@ -100,6 +101,10 @@
         <a href="cart.html" class="cart-btn">
           🛒 Корзина
           <span class="cart-count hidden">0</span>
+        </a>
+        <a href="account.html" class="auth-btn">
+          <span class="avatar-chip">👤</span>
+          <span class="auth-user-name">Войти</span>
         </a>
         <button class="burger" id="burgerBtn" aria-label="Меню">
           <span></span><span></span><span></span>
@@ -329,6 +334,7 @@
 </footer>
 
 <script src="js/data.js"></script>
+<script src="js/auth.js"></script>
 <script src="js/main.js"></script>
 <script>
 /* ===== CALCULATOR LOGIC ===== */

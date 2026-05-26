@@ -1,11 +1,15 @@
 /* ===== CART STORAGE ===== */
 const Cart = {
+  _key() {
+    const user = typeof Auth !== 'undefined' ? Auth.getCurrentUser() : null;
+    return user ? `ki_cart_${user.id}` : 'ki_cart_guest';
+  },
   getItems() {
-    try { return JSON.parse(localStorage.getItem('ki_cart') || '[]'); }
+    try { return JSON.parse(localStorage.getItem(Cart._key()) || '[]'); }
     catch { return []; }
   },
   saveItems(items) {
-    localStorage.setItem('ki_cart', JSON.stringify(items));
+    localStorage.setItem(Cart._key(), JSON.stringify(items));
     Cart.updateUI();
   },
   addItem(product, qty = 1) {
@@ -84,6 +88,7 @@ function initHeader() {
   }
 
   Cart.updateUI();
+  if (typeof Auth !== 'undefined') Auth.updateHeaderUI();
 }
 
 /* ===== FORMAT CURRENCY ===== */

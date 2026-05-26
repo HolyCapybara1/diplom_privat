@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Личный кабинет — Климат-Инарс</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/catalog.css">
+  <link rel="stylesheet" href="css/account.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-top">
+    <div class="container">
+      <div>ООО «Климат-Инарс» — профессиональные системы кондиционирования</div>
+      <div class="header-top-contacts">
+        <a href="tel:+74951234567">📞 +7 (495) 123-45-67</a>
+        <a href="mailto:info@klimat-inars.ru">✉ info@klimat-inars.ru</a>
+      </div>
+    </div>
+  </div>
+  <div class="header-main">
+    <div class="container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">❄</div>
+        <div class="logo-text">
+          <span class="logo-name">Климат-Инарс</span>
+          <span class="logo-tagline">Кондиционирование и вентиляция</span>
+        </div>
+      </a>
+      <nav class="nav">
+        <ul>
+          <li><a href="index.html">Главная</a></li>
+          <li><a href="catalog.html">Каталог</a></li>
+          <li><a href="services.html">Услуги</a></li>
+          <li><a href="calculator.html">Калькулятор</a></li>
+          <li><a href="about.html">О нас</a></li>
+          <li><a href="contacts.html">Контакты</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <a href="cart.html" class="cart-btn">
+          🛒 Корзина
+          <span class="cart-count hidden">0</span>
+        </a>
+        <a href="account.html" class="auth-btn">
+          <span class="avatar-chip">👤</span>
+          <span class="auth-user-name">Войти</span>
+        </a>
+        <button class="burger" id="burgerBtn" aria-label="Меню">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-close" id="mobileNavClose">✕</button>
+  <ul>
+    <li><a href="index.html">🏠 Главная</a></li>
+    <li><a href="catalog.html">📦 Каталог</a></li>
+    <li><a href="services.html">🔧 Услуги</a></li>
+    <li><a href="calculator.html">🧮 Калькулятор</a></li>
+    <li><a href="about.html">ℹ О нас</a></li>
+    <li><a href="contacts.html">📍 Контакты</a></li>
+    <li><a href="cart.html">🛒 Корзина</a></li>
+    <li><a href="account.html">👤 Кабинет</a></li>
+  </ul>
+</nav>
+
+<!-- AUTH PAGE (shown when not logged in) -->
+<div id="authPage">
+  <div class="auth-page">
+    <div class="auth-box">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="loginTab">Вход</button>
+        <button class="auth-tab" id="registerTab">Регистрация</button>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div class="auth-form" id="loginForm">
+        <h2>С возвращением!</h2>
+        <p class="subtitle">Войдите в личный кабинет</p>
+        <div class="auth-error" id="loginError"></div>
+        <div class="form-group">
+          <label>Email <span class="required" style="color:#e74c3c">*</span></label>
+          <input type="email" id="loginEmail" class="form-control" placeholder="example@mail.ru">
+          <div class="form-error"></div>
+        </div>
+        <div class="form-group">
+          <label>Пароль <span class="required" style="color:#e74c3c">*</span></label>
+          <input type="password" id="loginPassword" class="form-control" placeholder="Введите пароль">
+          <div class="form-error"></div>
+        </div>
+        <button class="auth-submit" id="loginBtn">Войти</button>
+        <p class="auth-switch">Нет аккаунта? <a id="toRegister">Зарегистрироваться</a></p>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div class="auth-form" id="registerForm" style="display:none">
+        <h2>Регистрация</h2>
+        <p class="subtitle">Создайте личный кабинет</p>
+        <div class="auth-error" id="registerError"></div>
+        <div class="form-group">
+          <label>Имя и фамилия <span class="required" style="color:#e74c3c">*</span></label>
+          <input type="text" id="regName" class="form-control" placeholder="Иван Иванов">
+          <div class="form-error"></div>
+        </div>
+        <div class="form-group">
+          <label>Телефон</label>
+          <input type="tel" id="regPhone" class="form-control" placeholder="+7 (___) ___-__-__">
+        </div>
+        <div class="form-group">
+          <label>Email <span class="required" style="color:#e74c3c">*</span></label>
+          <input type="email" id="regEmail" class="form-control" placeholder="example@mail.ru">
+          <div class="form-error"></div>
+        </div>
+        <div class="form-group">
+          <label>Пароль <span class="required" style="color:#e74c3c">*</span></label>
+          <input type="password" id="regPassword" class="form-control" placeholder="Минимум 6 символов">
+          <div class="form-error"></div>
+        </div>
+        <div class="form-group">
+          <label>Повторите пароль <span class="required" style="color:#e74c3c">*</span></label>
+          <input type="password" id="regPassword2" class="form-control" placeholder="Повторите пароль">
+          <div class="form-error"></div>
+        </div>
+        <button class="auth-submit" id="registerBtn">Создать аккаунт</button>
+        <p class="auth-switch">Уже есть аккаунт? <a id="toLogin">Войти</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ACCOUNT CABINET (shown when logged in) -->
+<div id="cabinetPage" style="display:none">
+  <div class="breadcrumb">
+    <div class="container">
+      <a href="index.html">Главная</a> <span>›</span> Личный кабинет
+    </div>
+  </div>
+  <div class="page-hero">
+    <div class="container">
+      <h1>Личный кабинет</h1>
+      <p id="cabinetGreeting">Добро пожаловать!</p>
+    </div>
+  </div>
+
+  <section class="section section-light">
+    <div class="container">
+      <div class="account-layout">
+
+        <!-- Sidebar -->
+        <div class="account-sidebar">
+          <div class="account-user-block">
+            <div class="account-avatar" id="sidebarAvatar">И</div>
+            <div class="account-user-name" id="sidebarName">—</div>
+            <div class="account-user-email" id="sidebarEmail">—</div>
+          </div>
+          <nav class="account-nav">
+            <div class="account-nav-item active" data-panel="profile">
+              <span class="icon">👤</span> Мой профиль
+            </div>
+            <div class="account-nav-item" data-panel="cart">
+              <span class="icon">🛒</span> Моя корзина
+            </div>
+            <div class="account-nav-item" data-panel="orders">
+              <span class="icon">📋</span> История заказов
+            </div>
+            <div class="account-nav-divider"></div>
+            <div class="account-nav-item" id="logoutBtn" style="color:#e74c3c">
+              <span class="icon">🚪</span> Выйти
+            </div>
+          </nav>
+        </div>
+
+        <!-- Main content -->
+        <div>
+
+          <!-- PROFILE PANEL -->
+          <div class="account-panel active" id="panel-profile">
+            <div class="panel-card">
+              <div class="panel-card-header">
+                <h2>Мой профиль</h2>
+              </div>
+              <div class="panel-card-body">
+                <div class="profile-info-row">
+                  <div class="profile-avatar-big" id="profileAvatarBig">И</div>
+                  <div class="profile-meta">
+                    <h3 id="profileName">—</h3>
+                    <p id="profileEmail">—</p>
+                    <p id="profilePhone" style="margin-top:0.2rem">—</p>
+                  </div>
+                </div>
+                <h4 style="margin-bottom:1rem;color:var(--primary)">Редактировать данные</h4>
+                <div id="profileSaveMsg" style="display:none;background:#eafaf1;border:1px solid #a9dfbf;color:#27ae60;padding:0.75rem 1rem;border-radius:8px;margin-bottom:1rem;font-size:0.88rem">
+                  ✅ Данные успешно сохранены!
+                </div>
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label>Имя и фамилия</label>
+                    <input type="text" id="editName" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label>Телефон</label>
+                    <input type="tel" id="editPhone" class="form-control">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Email <span style="font-size:0.78rem;color:var(--gray)">(нельзя изменить)</span></label>
+                  <input type="email" id="editEmail" class="form-control" disabled style="background:var(--light);color:var(--gray)">
+                </div>
+                <button class="btn btn-primary" id="saveProfileBtn">Сохранить изменения</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- CART PANEL -->
+          <div class="account-panel" id="panel-cart">
+            <div class="panel-card">
+              <div class="panel-card-header" style="display:flex;justify-content:space-between;align-items:center">
+                <h2>Моя корзина</h2>
+                <a href="cart.html" class="btn btn-primary btn-sm">Оформить заказ →</a>
+              </div>
+              <div id="accountCartList"></div>
+            </div>
+          </div>
+
+          <!-- ORDERS PANEL -->
+          <div class="account-panel" id="panel-orders">
+            <div class="panel-card">
+              <div class="panel-card-header">
+                <h2>История заказов</h2>
+              </div>
+              <div class="panel-card-body" id="ordersContainer">
+                <!-- filled by JS -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-main">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <div class="logo-icon">❄</div>
+            <div class="logo-text">
+              <span class="logo-name">Климат-Инарс</span>
+              <span class="logo-tagline">Кондиционирование и вентиляция</span>
+            </div>
+          </a>
+          <p>Профессиональные системы климат-контроля с 2010 года.</p>
+        </div>
+        <div class="footer-col"><h4>Навигация</h4><ul><li><a href="catalog.html">Каталог</a></li><li><a href="services.html">Услуги</a></li><li><a href="contacts.html">Контакты</a></li></ul></div>
+        <div class="footer-col"><h4>Кабинет</h4><ul><li><a href="account.html">Войти</a></li><li><a href="account.html">Регистрация</a></li><li><a href="cart.html">Корзина</a></li></ul></div>
+        <div class="footer-col"><h4>Контакты</h4><div class="footer-contact-item"><span class="icon">📞</span><span>+7 (495) 123-45-67</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="footer-bottom"><span>© 2025 ООО «Климат-Инарс». Все права защищены.</span></div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const user = Auth.getCurrentUser();
+
+  // Show correct page
+  if (user) {
+    showCabinet(user);
+  } else {
+    document.getElementById('authPage').style.display = 'block';
+    document.getElementById('cabinetPage').style.display = 'none';
+  }
+
+  // ===== AUTH TABS =====
+  document.getElementById('loginTab').addEventListener('click', () => switchAuthTab('login'));
+  document.getElementById('registerTab').addEventListener('click', () => switchAuthTab('register'));
+  document.getElementById('toRegister').addEventListener('click', () => switchAuthTab('register'));
+  document.getElementById('toLogin').addEventListener('click', () => switchAuthTab('login'));
+
+  function switchAuthTab(tab) {
+    const isLogin = tab === 'login';
+    document.getElementById('loginForm').style.display = isLogin ? 'block' : 'none';
+    document.getElementById('registerForm').style.display = isLogin ? 'none' : 'block';
+    document.getElementById('loginTab').classList.toggle('active', isLogin);
+    document.getElementById('registerTab').classList.toggle('active', !isLogin);
+  }
+
+  // ===== LOGIN =====
+  document.getElementById('loginBtn').addEventListener('click', () => {
+    const email    = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const errEl    = document.getElementById('loginError');
+    if (!email || !password) { showAuthError(errEl, 'Заполните все поля'); return; }
+    const result = Auth.login({ email, password });
+    if (!result.ok) { showAuthError(errEl, result.error); return; }
+    showCabinet(result.user);
+  });
+
+  // ===== REGISTER =====
+  document.getElementById('registerBtn').addEventListener('click', () => {
+    const name  = document.getElementById('regName').value.trim();
+    const phone = document.getElementById('regPhone').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const pass  = document.getElementById('regPassword').value;
+    const pass2 = document.getElementById('regPassword2').value;
+    const errEl = document.getElementById('registerError');
+
+    if (!name || !email || !pass)       { showAuthError(errEl, 'Заполните обязательные поля'); return; }
+    if (pass.length < 6)                { showAuthError(errEl, 'Пароль должен быть не менее 6 символов'); return; }
+    if (pass !== pass2)                 { showAuthError(errEl, 'Пароли не совпадают'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAuthError(errEl, 'Введите корректный email'); return; }
+
+    const result = Auth.register({ name, email, phone, password: pass });
+    if (!result.ok) { showAuthError(errEl, result.error); return; }
+    showCabinet(result.user);
+  });
+
+  function showAuthError(el, msg) {
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 4000);
+  }
+
+  // ===== CABINET =====
+  function showCabinet(user) {
+    document.getElementById('authPage').style.display = 'none';
+    document.getElementById('cabinetPage').style.display = 'block';
+
+    // Fill sidebar & profile
+    const initials = user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    document.getElementById('sidebarAvatar').textContent    = initials;
+    document.getElementById('sidebarName').textContent      = user.name;
+    document.getElementById('sidebarEmail').textContent     = user.email;
+    document.getElementById('profileAvatarBig').textContent = initials;
+    document.getElementById('profileName').textContent      = user.name;
+    document.getElementById('profileEmail').textContent     = user.email;
+    document.getElementById('profilePhone').textContent     = user.phone || 'Телефон не указан';
+    document.getElementById('cabinetGreeting').textContent  = `Добро пожаловать, ${user.name.split(' ')[0]}!`;
+    document.getElementById('editName').value  = user.name;
+    document.getElementById('editPhone').value = user.phone || '';
+    document.getElementById('editEmail').value = user.email;
+
+    renderAccountCart();
+    renderOrders();
+  }
+
+  // ===== PANEL NAVIGATION =====
+  document.querySelectorAll('.account-nav-item[data-panel]').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.account-nav-item').forEach(i => i.classList.remove('active'));
+      document.querySelectorAll('.account-panel').forEach(p => p.classList.remove('active'));
+      item.classList.add('active');
+      document.getElementById(`panel-${item.dataset.panel}`).classList.add('active');
+      if (item.dataset.panel === 'cart') renderAccountCart();
+    });
+  });
+
+  // ===== LOGOUT =====
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    if (confirm('Выйти из аккаунта?')) {
+      Auth.logout();
+      window.location.reload();
+    }
+  });
+
+  // ===== SAVE PROFILE =====
+  document.getElementById('saveProfileBtn').addEventListener('click', () => {
+    const name  = document.getElementById('editName').value.trim();
+    const phone = document.getElementById('editPhone').value.trim();
+    if (!name) return;
+    Auth.updateProfile({ name, phone });
+    const user = Auth.getCurrentUser();
+    const initials = user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    document.getElementById('sidebarAvatar').textContent    = initials;
+    document.getElementById('sidebarName').textContent      = user.name;
+    document.getElementById('profileAvatarBig').textContent = initials;
+    document.getElementById('profileName').textContent      = user.name;
+    document.getElementById('profilePhone').textContent     = user.phone || 'Телефон не указан';
+    const msg = document.getElementById('profileSaveMsg');
+    msg.style.display = 'block';
+    setTimeout(() => msg.style.display = 'none', 3000);
+  });
+
+  // ===== RENDER ACCOUNT CART =====
+  function renderAccountCart() {
+    const items = Cart.getItems();
+    const container = document.getElementById('accountCartList');
+    if (!items.length) {
+      container.innerHTML = `<div class="panel-empty"><div class="icon">🛒</div><h3>Корзина пуста</h3><p>Добавьте товары из каталога</p><a href="catalog.html" class="btn btn-primary" style="margin-top:1rem">Перейти в каталог</a></div>`;
+      return;
+    }
+    const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+    container.innerHTML = items.map(item => `
+      <div class="account-cart-item">
+        <div class="account-cart-img">${item.emoji}</div>
+        <div class="account-cart-info">
+          <h4>${item.name}</h4>
+          <p>${item.category} · ${item.qty} шт.</p>
+        </div>
+        <div class="account-cart-price">${(item.price * item.qty).toLocaleString('ru-RU')} ₽</div>
+        <button class="remove-item" data-id="${item.id}" title="Удалить">✕</button>
+      </div>
+    `).join('') + `
+      <div style="padding:1rem 1.5rem;border-top:2px solid var(--gray-light);display:flex;justify-content:space-between;align-items:center">
+        <span style="font-weight:700;color:var(--primary)">Итого: <span style="color:var(--accent)">${total.toLocaleString('ru-RU')} ₽</span></span>
+        <a href="cart.html" class="btn btn-primary btn-sm">Оформить →</a>
+      </div>`;
+
+    container.querySelectorAll('.remove-item').forEach(btn => {
+      btn.addEventListener('click', () => {
+        Cart.removeItem(parseInt(btn.dataset.id));
+        renderAccountCart();
+      });
+    });
+  }
+
+  // ===== RENDER ORDERS =====
+  function renderOrders() {
+    const user = Auth.getCurrentUser();
+    if (!user) return;
+    const key = `ki_orders_${user.id}`;
+    const orders = JSON.parse(localStorage.getItem(key) || '[]');
+    const container = document.getElementById('ordersContainer');
+    if (!orders.length) {
+      container.innerHTML = `<div class="panel-empty"><div class="icon">📋</div><h3>Заказов пока нет</h3><p>Оформите первый заказ через корзину</p><a href="catalog.html" class="btn btn-primary" style="margin-top:1rem">Перейти в каталог</a></div>`;
+      return;
+    }
+    container.innerHTML = orders.slice().reverse().map(o => `
+      <div class="order-card">
+        <div class="order-card-header">
+          <span class="order-num">Заказ #${o.id}</span>
+          <span class="order-date">${o.date}</span>
+          <span class="order-status ${o.status === 'Новый' ? 'new' : 'done'}">${o.status}</span>
+        </div>
+        <div class="order-items">${o.items.map(i => `${i.name} × ${i.qty}`).join(', ')}</div>
+        <div class="order-total"><span>Сумма заказа</span><span class="val">${o.total.toLocaleString('ru-RU')} ₽</span></div>
+      </div>`).join('');
+  }
+});
+</script>
+</body>
+</html>

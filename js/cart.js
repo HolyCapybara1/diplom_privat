@@ -150,6 +150,23 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function showSuccess(name) {
+    // Save order to history if user is logged in
+    const user = typeof Auth !== 'undefined' ? Auth.getCurrentUser() : null;
+    if (user) {
+      const key = `ki_orders_${user.id}`;
+      const orders = JSON.parse(localStorage.getItem(key) || '[]');
+      const formData2 = new FormData(orderForm);
+      orders.push({
+        id: Date.now().toString().slice(-6),
+        date: new Date().toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        status: 'Новый',
+        items: Cart.getItems().map(i => ({ name: i.name, qty: i.qty })),
+        total: Cart.total(),
+        address: formData2.get('address') || ''
+      });
+      localStorage.setItem(key, JSON.stringify(orders));
+    }
+
     Cart.clear();
     orderForm.style.display = 'none';
     orderSuccess.classList.add('show');
