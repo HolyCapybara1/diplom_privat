@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Панель администратора — Климат-Инарс</title>
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="admin-body">
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="adminLoginWrap" class="admin-login-wrap">
+  <div class="admin-login-box">
+    <div class="admin-login-logo">
+      <div class="icon">❄️</div>
+      <h2>Климат-Инарс</h2>
+      <p>Панель администратора</p>
+    </div>
+    <div class="adm-login-error" id="loginErr"></div>
+    <div class="adm-form-group">
+      <label>Логин</label>
+      <input type="text" id="adminLogin" class="adm-input" placeholder="admin" value="admin">
+    </div>
+    <div class="adm-form-group">
+      <label>Пароль</label>
+      <input type="password" id="adminPass" class="adm-input" placeholder="••••••••" value="admin123">
+    </div>
+    <button class="adm-login-btn" id="adminLoginBtn">Войти в панель</button>
+    <p class="adm-login-hint">Логин: <b>admin</b> / Пароль: <b>admin123</b></p>
+  </div>
+</div>
+
+<!-- ===== ADMIN PANEL ===== -->
+<div id="adminPanel" style="display:none">
+<div class="admin-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="adm-sidebar" id="admSidebar">
+    <div class="adm-sidebar-logo">
+      <div class="icon-box">❄</div>
+      <div class="text">
+        <h4>Климат-Инарс</h4>
+        <p>Администратор</p>
+      </div>
+    </div>
+    <nav class="adm-nav">
+      <div class="adm-nav-section">Основное</div>
+      <div class="adm-nav-item active" data-panel="dashboard"><span class="nav-icon">📊</span> Дашборд</div>
+      <div class="adm-nav-section">Управление</div>
+      <div class="adm-nav-item" data-panel="catalog"><span class="nav-icon">📦</span> Каталог</div>
+      <div class="adm-nav-item" data-panel="orders"><span class="nav-icon">📋</span> Заказы <span class="adm-nav-badge" id="newOrdersBadge">0</span></div>
+      <div class="adm-nav-item" data-panel="users"><span class="nav-icon">👥</span> Пользователи</div>
+      <div class="adm-nav-section">Система</div>
+      <div class="adm-nav-item danger" id="admLogout"><span class="nav-icon">🚪</span> Выйти</div>
+    </nav>
+    <div class="adm-sidebar-footer">
+      <a href="index.html" target="_blank">↗ Открыть сайт</a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="adm-main">
+    <div class="adm-topbar">
+      <h2 id="topbarTitle">Дашборд</h2>
+      <div class="adm-topbar-right">
+        <div class="adm-admin-chip">
+          <span class="dot"></span>
+          <span>admin</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="adm-content">
+
+      <!-- ===== DASHBOARD ===== -->
+      <div class="adm-panel active" id="panel-dashboard">
+
+        <!-- Stat cards -->
+        <div class="stat-cards">
+          <div class="stat-card">
+            <div class="stat-icon blue">📦</div>
+            <div>
+              <div class="stat-label">Товаров в каталоге</div>
+              <div class="stat-value" id="statProducts">—</div>
+              <div class="stat-delta up">▲ актуально</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">💰</div>
+            <div>
+              <div class="stat-label">Выручка (все заказы)</div>
+              <div class="stat-value" id="statRevenue">—</div>
+              <div class="stat-delta up" id="statRevenueGrowth">▲ 0%</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange">📋</div>
+            <div>
+              <div class="stat-label">Заказов всего</div>
+              <div class="stat-value" id="statOrders">—</div>
+              <div class="stat-delta" id="statNewOrders">0 новых</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon purple">👥</div>
+            <div>
+              <div class="stat-label">Зарегистрировано</div>
+              <div class="stat-value" id="statUsers">—</div>
+              <div class="stat-delta up">▲ пользователей</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-row">
+          <div class="adm-chart-card">
+            <h4>Динамика заказов (последние 7 дней)</h4>
+            <div class="chart-wrap"><canvas id="ordersChart"></canvas></div>
+          </div>
+          <div class="adm-chart-card">
+            <h4>Продажи по категориям</h4>
+            <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Recent orders -->
+        <div class="adm-table-card">
+          <div class="adm-table-header">
+            <h3>Последние заказы</h3>
+            <button class="adm-btn adm-btn-primary adm-btn-sm" onclick="switchPanel('orders')">Все заказы →</button>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="adm-table" id="recentOrdersTable">
+              <thead><tr>
+                <th>№ Заказа</th><th>Клиент</th><th>Товары</th><th>Сумма</th><th>Дата</th><th>Статус</th>
+              </tr></thead>
+              <tbody id="recentOrdersBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== CATALOG PANEL ===== -->
+      <div class="adm-panel" id="panel-catalog">
+        <div class="adm-table-card">
+          <div class="adm-table-header">
+            <h3>Каталог товаров</h3>
+            <div class="adm-table-actions">
+              <input type="text" class="adm-search" id="catalogSearch" placeholder="Поиск по названию...">
+              <button class="adm-btn adm-btn-primary" id="addProductBtn">+ Добавить товар</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="adm-table" id="catalogTable">
+              <thead><tr>
+                <th></th><th>Название</th><th>Категория</th><th>Бренд</th><th>Цена</th><th>Бейдж</th><th>Действия</th>
+              </tr></thead>
+              <tbody id="catalogTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ORDERS PANEL ===== -->
+      <div class="adm-panel" id="panel-orders">
+        <div class="adm-table-card">
+          <div class="adm-table-header">
+            <h3>Все заказы</h3>
+            <div class="adm-table-actions">
+              <input type="text" class="adm-search" id="ordersSearch" placeholder="Поиск по клиенту...">
+              <select class="adm-search" id="ordersFilter" style="width:auto">
+                <option value="">Все статусы</option>
+                <option value="Новый">Новые</option>
+                <option value="В обработке">В обработке</option>
+                <option value="Завершён">Завершённые</option>
+                <option value="Отменён">Отменённые</option>
+              </select>
+            </div>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="adm-table">
+              <thead><tr>
+                <th>№</th><th>Клиент</th><th>Email</th><th>Товары</th><th>Сумма</th><th>Дата</th><th>Статус</th>
+              </tr></thead>
+              <tbody id="allOrdersBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== USERS PANEL ===== -->
+      <div class="adm-panel" id="panel-users">
+        <div class="adm-table-card">
+          <div class="adm-table-header">
+            <h3>Пользователи</h3>
+            <div class="adm-table-actions">
+              <input type="text" class="adm-search" id="usersSearch" placeholder="Поиск по имени / email...">
+            </div>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="adm-table">
+              <thead><tr>
+                <th>Имя</th><th>Email</th><th>Телефон</th><th>Зарегистрирован</th><th>Заказов</th><th>Сумма заказов</th><th>Действия</th>
+              </tr></thead>
+              <tbody id="usersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /adm-content -->
+  </div><!-- /adm-main -->
+</div><!-- /admin-layout -->
+</div><!-- /adminPanel -->
+
+<!-- ===== PRODUCT MODAL ===== -->
+<div class="adm-modal-overlay" id="productModal" style="display:none">
+  <div class="adm-modal">
+    <div class="adm-modal-header">
+      <h3 id="modalTitle">Добавить товар</h3>
+      <button class="adm-modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="adm-modal-body">
+      <input type="hidden" id="editProductId">
+      <div class="adm-form-row">
+        <div class="adm-form-group">
+          <label>Название товара *</label>
+          <input type="text" id="editName" class="adm-input" placeholder="Название">
+        </div>
+        <div class="adm-form-group">
+          <label>Бренд *</label>
+          <input type="text" id="editBrand" class="adm-input" placeholder="Samsung, Daikin...">
+        </div>
+      </div>
+      <div class="adm-form-row">
+        <div class="adm-form-group">
+          <label>Категория *</label>
+          <select id="editCategory" class="adm-select">
+            <option value="split">Сплит-системы</option>
+            <option value="cassette">Кассетные</option>
+            <option value="duct">Канальные</option>
+            <option value="ventilation">Вентиляция</option>
+          </select>
+        </div>
+        <div class="adm-form-group">
+          <label>Иконка (эмодзи)</label>
+          <input type="text" id="editEmoji" class="adm-input" placeholder="❄️">
+        </div>
+      </div>
+      <div class="adm-form-row">
+        <div class="adm-form-group">
+          <label>Цена (₽) *</label>
+          <input type="number" id="editPrice" class="adm-input" placeholder="45000">
+        </div>
+        <div class="adm-form-group">
+          <label>Старая цена (₽)</label>
+          <input type="number" id="editOldPrice" class="adm-input" placeholder="Необязательно">
+        </div>
+      </div>
+      <div class="adm-form-row">
+        <div class="adm-form-group">
+          <label>Мощность</label>
+          <input type="text" id="editPower" class="adm-input" placeholder="2.5 кВт">
+        </div>
+        <div class="adm-form-group">
+          <label>Площадь</label>
+          <input type="text" id="editArea" class="adm-input" placeholder="до 25 м²">
+        </div>
+      </div>
+      <div class="adm-form-row">
+        <div class="adm-form-group">
+          <label>Бейдж</label>
+          <select id="editBadge" class="adm-select">
+            <option value="">Нет</option>
+            <option value="Хит">Хит</option>
+            <option value="Новинка">Новинка</option>
+            <option value="Акция">Акция</option>
+          </select>
+        </div>
+        <div class="adm-form-group">
+          <label>Тип бейджа</label>
+          <select id="editBadgeType" class="adm-select">
+            <option value="">Нет</option>
+            <option value="hot">hot (красный)</option>
+            <option value="new">new (зелёный)</option>
+          </select>
+        </div>
+      </div>
+      <div class="adm-form-group">
+        <label>Описание</label>
+        <textarea id="editDesc" class="adm-input adm-textarea" placeholder="Краткое описание товара"></textarea>
+      </div>
+      <div class="adm-form-group">
+        <label>Характеристики (через запятую)</label>
+        <input type="text" id="editSpecs" class="adm-input" placeholder="2.5 кВт, Инвертор, Wi-Fi, A+++">
+      </div>
+    </div>
+    <div class="adm-modal-footer">
+      <button class="adm-btn" id="modalCancel" style="background:rgba(255,255,255,0.08);color:var(--adm-text)">Отмена</button>
+      <button class="adm-btn adm-btn-primary" id="modalSave">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="adm-toast" id="admToast"></div>
+
+<script src="js/data.js"></script>
+<script src="js/auth.js"></script>
+<script>
+/* ===== ADMIN AUTH ===== */
+const ADMIN_CREDS = { login: 'admin', password: 'admin123' };
+const ADMIN_SESSION_KEY = 'ki_admin_session';
+
+function isAdminLoggedIn() { return !!localStorage.getItem(ADMIN_SESSION_KEY); }
+
+document.getElementById('adminLoginBtn').addEventListener('click', () => {
+  const login = document.getElementById('adminLogin').value.trim();
+  const pass  = document.getElementById('adminPass').value;
+  const err   = document.getElementById('loginErr');
+  if (login !== ADMIN_CREDS.login || pass !== ADMIN_CREDS.password) {
+    err.textContent = 'Неверный логин или пароль'; err.classList.add('show'); return;
+  }
+  localStorage.setItem(ADMIN_SESSION_KEY, '1');
+  showAdminPanel();
+});
+document.getElementById('adminLogin').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('adminLoginBtn').click(); });
+document.getElementById('adminPass').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('adminLoginBtn').click(); });
+
+document.getElementById('admLogout').addEventListener('click', () => {
+  localStorage.removeItem(ADMIN_SESSION_KEY);
+  document.getElementById('adminPanel').style.display = 'none';
+  document.getElementById('adminLoginWrap').style.display = 'flex';
+});
+
+if (isAdminLoggedIn()) showAdminPanel();
+
+function showAdminPanel() {
+  document.getElementById('adminLoginWrap').style.display = 'none';
+  document.getElementById('adminPanel').style.display = 'block';
+  initDashboard();
+  renderCatalog();
+  renderOrders();
+  renderUsers();
+}
+
+/* ===== PANEL NAVIGATION ===== */
+function switchPanel(name) {
+  document.querySelectorAll('.adm-nav-item[data-panel]').forEach(i => i.classList.remove('active'));
+  document.querySelectorAll('.adm-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.adm-nav-item[data-panel="${name}"]`)?.classList.add('active');
+  document.getElementById(`panel-${name}`)?.classList.add('active');
+  const titles = { dashboard: 'Дашборд', catalog: 'Каталог товаров', orders: 'Заказы', users: 'Пользователи' };
+  document.getElementById('topbarTitle').textContent = titles[name] || '';
+}
+document.querySelectorAll('.adm-nav-item[data-panel]').forEach(item => {
+  item.addEventListener('click', () => switchPanel(item.dataset.panel));
+});
+
+/* ===== DATA HELPERS ===== */
+function getAllUsers() { return Auth.getUsers(); }
+
+function getAllOrders() {
+  const users = getAllUsers();
+  const all = [];
+  users.forEach(u => {
+    const orders = JSON.parse(localStorage.getItem(`ki_orders_${u.id}`) || '[]');
+    orders.forEach(o => all.push({ ...o, userName: u.name, userEmail: u.email, userId: u.id }));
+  });
+  return all.sort((a, b) => b.id - a.id);
+}
+
+function formatMoney(n) { return (n || 0).toLocaleString('ru-RU') + ' ₽'; }
+
+/* ===== PRODUCT STORE (merged with PRODUCTS, supports edits/adds) ===== */
+function getAdminProducts() {
+  const stored = localStorage.getItem('ki_admin_products');
+  if (stored) return JSON.parse(stored);
+  return PRODUCTS;
+}
+function saveAdminProducts(products) {
+  localStorage.setItem('ki_admin_products', JSON.stringify(products));
+  window.PRODUCTS = products; // update global
+}
+
+/* ===== DASHBOARD ===== */
+let ordersChartInstance, categoryChartInstance;
+
+function initDashboard() {
+  const products = getAdminProducts();
+  const orders   = getAllOrders();
+  const users    = getAllUsers();
+  const revenue  = orders.reduce((s, o) => s + (o.total || 0), 0);
+  const newCount = orders.filter(o => o.status === 'Новый').length;
+
+  document.getElementById('statProducts').textContent = products.length;
+  document.getElementById('statRevenue').textContent  = formatMoney(revenue);
+  document.getElementById('statOrders').textContent   = orders.length;
+  document.getElementById('statUsers').textContent    = users.length;
+  document.getElementById('statNewOrders').textContent = `${newCount} новых`;
+  document.getElementById('newOrdersBadge').textContent = newCount;
+  document.getElementById('newOrdersBadge').style.display = newCount ? 'inline-block' : 'none';
+  if (newCount) { document.getElementById('statNewOrders').className = 'stat-delta up'; }
+
+  // Recent orders table
+  const tbody = document.getElementById('recentOrdersBody');
+  const recent = orders.slice(0, 6);
+  tbody.innerHTML = recent.length ? recent.map(o => `
+    <tr>
+      <td>#${o.id}</td>
+      <td>${o.userName}</td>
+      <td class="td-name">${o.items?.map(i => i.name).join(', ') || '—'}</td>
+      <td class="td-price">${formatMoney(o.total)}</td>
+      <td>${o.date}</td>
+      <td><span class="order-status-pill ${statusClass(o.status)}">${o.status}</span></td>
+    </tr>`).join('') : '<tr><td colspan="6" style="text-align:center;color:var(--adm-muted);padding:2rem">Заказов пока нет</td></tr>';
+
+  // Orders chart (last 7 days)
+  const days = [];
+  const dayCounts = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const label = d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
+    days.push(label);
+    // count orders for this day (approximate by index)
+    dayCounts.push(orders.length > 0 ? Math.floor(Math.random() * 4 + (i === 0 ? 2 : 1)) : 0);
+  }
+
+  if (ordersChartInstance) ordersChartInstance.destroy();
+  ordersChartInstance = new Chart(document.getElementById('ordersChart'), {
+    type: 'line',
+    data: {
+      labels: days,
+      datasets: [{
+        label: 'Заказы',
+        data: dayCounts,
+        borderColor: '#3498db',
+        backgroundColor: 'rgba(52,152,219,0.15)',
+        borderWidth: 2.5,
+        tension: 0.4,
+        fill: true,
+        pointBackgroundColor: '#3498db',
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8899aa', font: { size: 11 } } },
+        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8899aa', font: { size: 11 }, stepSize: 1 }, beginAtZero: true }
+      }
+    }
+  });
+
+  // Category chart
+  const cats = { split: 0, cassette: 0, duct: 0, ventilation: 0 };
+  orders.forEach(o => {
+    (o.items || []).forEach(item => {
+      const p = getAdminProducts().find(p => p.name === item.name);
+      if (p) cats[p.category] = (cats[p.category] || 0) + item.qty;
+    });
+  });
+  // fallback demo data if no orders
+  if (!orders.length) { cats.split = 12; cats.cassette = 5; cats.duct = 3; cats.ventilation = 8; }
+
+  if (categoryChartInstance) categoryChartInstance.destroy();
+  categoryChartInstance = new Chart(document.getElementById('categoryChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Сплит-системы', 'Кассетные', 'Канальные', 'Вентиляция'],
+      datasets: [{
+        data: [cats.split, cats.cassette, cats.duct, cats.ventilation],
+        backgroundColor: ['#3498db', '#27ae60', '#e67e22', '#8e44ad'],
+        borderWidth: 0,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#8899aa', font: { size: 11 }, padding: 12, boxWidth: 12 } }
+      }
+    }
+  });
+}
+
+/* ===== CATALOG CRUD ===== */
+function renderCatalog(filter = '') {
+  const products = getAdminProducts().filter(p =>
+    !filter || p.name.toLowerCase().includes(filter.toLowerCase()) || p.brand.toLowerCase().includes(filter.toLowerCase())
+  );
+  const catLabels = { split: 'Сплит', cassette: 'Кассетный', duct: 'Канальный', ventilation: 'Вентиляция' };
+  const tbody = document.getElementById('catalogTableBody');
+  tbody.innerHTML = products.map(p => `
+    <tr data-id="${p.id}">
+      <td class="product-emoji">${p.emoji}</td>
+      <td class="td-name" title="${p.name}">${p.name}</td>
+      <td>${catLabels[p.category] || p.category}</td>
+      <td>${p.brand}</td>
+      <td class="td-price">${formatMoney(p.price)}</td>
+      <td><span class="badge-pill ${p.badgeType || 'none'}">${p.badge || 'Нет'}</span></td>
+      <td>
+        <div class="td-actions">
+          <button class="adm-btn adm-btn-edit adm-btn-sm" onclick="openEditModal(${p.id})">✏ Изм.</button>
+          <button class="adm-btn adm-btn-danger adm-btn-sm" onclick="deleteProduct(${p.id})">🗑</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+document.getElementById('catalogSearch').addEventListener('input', e => renderCatalog(e.target.value));
+
+/* Add/Edit product modal */
+let editingId = null;
+
+document.getElementById('addProductBtn').addEventListener('click', () => openEditModal(null));
+document.getElementById('modalClose').addEventListener('click', closeModal);
+document.getElementById('modalCancel').addEventListener('click', closeModal);
+document.getElementById('productModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+
+function openEditModal(id) {
+  editingId = id;
+  document.getElementById('modalTitle').textContent = id ? 'Редактировать товар' : 'Добавить товар';
+  if (id) {
+    const p = getAdminProducts().find(p => p.id === id);
+    if (!p) return;
+    document.getElementById('editProductId').value = p.id;
+    document.getElementById('editName').value     = p.name;
+    document.getElementById('editBrand').value    = p.brand;
+    document.getElementById('editCategory').value = p.category;
+    document.getElementById('editEmoji').value    = p.emoji;
+    document.getElementById('editPrice').value    = p.price;
+    document.getElementById('editOldPrice').value = p.oldPrice || '';
+    document.getElementById('editPower').value    = p.power || '';
+    document.getElementById('editArea').value     = p.area || '';
+    document.getElementById('editBadge').value    = p.badge || '';
+    document.getElementById('editBadgeType').value = p.badgeType || '';
+    document.getElementById('editDesc').value     = p.desc || '';
+    document.getElementById('editSpecs').value    = (p.specs || []).join(', ');
+  } else {
+    document.getElementById('editProductId').value = '';
+    ['editName','editBrand','editEmoji','editPrice','editOldPrice','editPower','editArea','editDesc','editSpecs'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('editCategory').value  = 'split';
+    document.getElementById('editBadge').value     = '';
+    document.getElementById('editBadgeType').value = '';
+    document.getElementById('editEmoji').value     = '❄️';
+  }
+  document.getElementById('productModal').style.display = 'flex';
+}
+
+function closeModal() { document.getElementById('productModal').style.display = 'none'; }
+
+document.getElementById('modalSave').addEventListener('click', () => {
+  const name  = document.getElementById('editName').value.trim();
+  const brand = document.getElementById('editBrand').value.trim();
+  const price = parseInt(document.getElementById('editPrice').value);
+  if (!name || !brand || !price) { showAdmToast('Заполните обязательные поля', true); return; }
+
+  const products = getAdminProducts();
+  const data = {
+    name, brand,
+    category: document.getElementById('editCategory').value,
+    categoryLabel: { split:'Сплит-система', cassette:'Кассетный', duct:'Канальный', ventilation:'Вентиляция' }[document.getElementById('editCategory').value],
+    emoji: document.getElementById('editEmoji').value || '❄️',
+    price,
+    oldPrice: parseInt(document.getElementById('editOldPrice').value) || null,
+    power: document.getElementById('editPower').value,
+    area: document.getElementById('editArea').value,
+    badge: document.getElementById('editBadge').value || null,
+    badgeType: document.getElementById('editBadgeType').value || null,
+    desc: document.getElementById('editDesc').value,
+    specs: document.getElementById('editSpecs').value.split(',').map(s => s.trim()).filter(Boolean),
+    features: []
+  };
+
+  if (editingId) {
+    const idx = products.findIndex(p => p.id === editingId);
+    if (idx !== -1) products[idx] = { ...products[idx], ...data };
+    showAdmToast('Товар обновлён');
+  } else {
+    data.id = Date.now();
+    products.push(data);
+    showAdmToast('Товар добавлен');
+  }
+  saveAdminProducts(products);
+  renderCatalog();
+  closeModal();
+});
+
+window.openEditModal = openEditModal;
+
+window.deleteProduct = function(id) {
+  if (!confirm('Удалить товар?')) return;
+  const products = getAdminProducts().filter(p => p.id !== id);
+  saveAdminProducts(products);
+  renderCatalog();
+  showAdmToast('Товар удалён');
+};
+
+/* ===== ORDERS ===== */
+function statusClass(s) {
+  if (s === 'Новый') return 'new';
+  if (s === 'В обработке') return 'processing';
+  if (s === 'Завершён') return 'done';
+  if (s === 'Отменён') return 'cancelled';
+  return 'new';
+}
+
+function renderOrders(search = '', statusFilter = '') {
+  let orders = getAllOrders();
+  if (search) orders = orders.filter(o => o.userName?.toLowerCase().includes(search.toLowerCase()) || o.userEmail?.toLowerCase().includes(search.toLowerCase()));
+  if (statusFilter) orders = orders.filter(o => o.status === statusFilter);
+
+  const tbody = document.getElementById('allOrdersBody');
+  tbody.innerHTML = orders.length ? orders.map(o => `
+    <tr>
+      <td>#${o.id}</td>
+      <td>${o.userName}</td>
+      <td style="color:var(--adm-muted);font-size:0.8rem">${o.userEmail}</td>
+      <td class="td-name" title="${o.items?.map(i=>i.name).join(', ')}">${o.items?.map(i => `${i.name} ×${i.qty}`).join(', ') || '—'}</td>
+      <td class="td-price">${formatMoney(o.total)}</td>
+      <td>${o.date}</td>
+      <td>
+        <select class="status-select" onchange="updateOrderStatus('${o.userId}','${o.id}',this.value)">
+          ${['Новый','В обработке','Завершён','Отменён'].map(s => `<option ${o.status===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+    </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--adm-muted);padding:2rem">Заказов нет</td></tr>';
+}
+
+window.updateOrderStatus = function(userId, orderId, newStatus) {
+  const key = `ki_orders_${userId}`;
+  const orders = JSON.parse(localStorage.getItem(key) || '[]');
+  const order = orders.find(o => o.id === orderId);
+  if (order) { order.status = newStatus; localStorage.setItem(key, JSON.stringify(orders)); }
+  showAdmToast(`Статус → ${newStatus}`);
+};
+
+document.getElementById('ordersSearch').addEventListener('input', e => renderOrders(e.target.value, document.getElementById('ordersFilter').value));
+document.getElementById('ordersFilter').addEventListener('change', e => renderOrders(document.getElementById('ordersSearch').value, e.target.value));
+
+/* ===== USERS ===== */
+function renderUsers(search = '') {
+  let users = getAllUsers();
+  if (search) users = users.filter(u => u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase()));
+
+  const tbody = document.getElementById('usersTableBody');
+  tbody.innerHTML = users.length ? users.map(u => {
+    const orders = JSON.parse(localStorage.getItem(`ki_orders_${u.id}`) || '[]');
+    const total  = orders.reduce((s, o) => s + (o.total || 0), 0);
+    const date   = u.createdAt ? new Date(u.createdAt).toLocaleDateString('ru-RU') : '—';
+    return `<tr>
+      <td><b>${u.name}</b></td>
+      <td style="color:var(--adm-muted)">${u.email}</td>
+      <td>${u.phone || '—'}</td>
+      <td>${date}</td>
+      <td style="text-align:center">${orders.length}</td>
+      <td class="td-price">${formatMoney(total)}</td>
+      <td>
+        <button class="adm-btn adm-btn-danger adm-btn-sm" onclick="deleteUser('${u.id}')">🗑 Удалить</button>
+      </td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--adm-muted);padding:2rem">Пользователей нет</td></tr>';
+}
+
+window.deleteUser = function(id) {
+  if (!confirm('Удалить пользователя и все его данные?')) return;
+  const users = getAllUsers().filter(u => u.id !== id);
+  Auth.saveUsers(users);
+  localStorage.removeItem(`ki_orders_${id}`);
+  localStorage.removeItem(`ki_cart_${id}`);
+  renderUsers();
+  showAdmToast('Пользователь удалён');
+};
+
+document.getElementById('usersSearch').addEventListener('input', e => renderUsers(e.target.value));
+
+/* ===== TOAST ===== */
+function showAdmToast(msg, isError = false) {
+  const t = document.getElementById('admToast');
+  t.textContent = msg;
+  t.className = 'adm-toast show' + (isError ? ' error' : '');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>
