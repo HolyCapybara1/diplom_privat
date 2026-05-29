@@ -97,6 +97,7 @@
         </div>
         <button class="auth-submit" id="loginBtn">Войти</button>
         <p class="auth-switch">Нет аккаунта? <a id="toRegister">Зарегистрироваться</a></p>
+        <p style="font-size:0.75rem;color:var(--gray);text-align:center;margin-top:0.5rem">Для входа в панель администратора используйте логин <b>admin</b></p>
       </div>
 
       <!-- REGISTER FORM -->
@@ -308,6 +309,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const password = document.getElementById('loginPassword').value;
     const errEl    = document.getElementById('loginError');
     if (!email || !password) { showAuthError(errEl, 'Заполните все поля'); return; }
+
+    // Admin shortcut: login=admin, password=admin123
+    if (email === 'admin' && password === 'admin123') {
+      localStorage.setItem('ki_admin_session', '1');
+      window.location.href = 'admin.html';
+      return;
+    }
+
     const result = Auth.login({ email, password });
     if (!result.ok) { showAuthError(errEl, result.error); return; }
     showCabinet(result.user);
