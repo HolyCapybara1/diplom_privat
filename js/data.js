@@ -207,6 +207,11 @@ const SERVICES = [
   }
 ];
 
-// Expose globally
-window.PRODUCTS = PRODUCTS;
+// Expose globally — if admin saved edits, use those instead of hardcoded list
+try {
+  const saved = localStorage.getItem('ki_admin_products');
+  window.PRODUCTS = saved ? JSON.parse(saved) : PRODUCTS;
+} catch (e) {
+  window.PRODUCTS = PRODUCTS;
+}
 window.SERVICES = SERVICES;
