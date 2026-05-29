@@ -1,5 +1,5 @@
 /* Product & Service data for Klimat-Inars */
-const PRODUCTS = [
+var PRODUCTS = [
   // ===== НАСТЕННЫЕ СПЛИТ-СИСТЕМЫ =====
   {
     id: 1, category: 'split', categoryLabel: 'Сплит-система',
@@ -174,7 +174,7 @@ const PRODUCTS = [
   }
 ];
 
-const SERVICES = [
+var SERVICES = [
   {
     id: 's1', emoji: '🔧', title: 'Монтаж сплит-системы',
     desc: 'Профессиональная установка настенных и мульти-сплит систем. Прокладка трасс, вакуумирование, пуско-наладка.',

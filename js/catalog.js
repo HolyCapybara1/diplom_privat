@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function getFiltered() {
-    let items = PRODUCTS;
+    let items = window.PRODUCTS || PRODUCTS;
     if (state.category !== 'all') items = items.filter(p => p.category === state.category);
     if (state.brands.length) items = items.filter(p => state.brands.includes(p.brand));
     items = items.filter(p => p.price >= state.priceMin && p.price <= (state.priceMax || Infinity));
