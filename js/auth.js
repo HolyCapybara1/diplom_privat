@@ -1,67 +1,126 @@
-/* ===== AUTH — localStorage-based auth ===== */
+/* ===== AUTH — PHP REST API backed ===== */
 const Auth = {
-  USERS_KEY: 'ki_users',
   SESSION_KEY: 'ki_session',
+  ADMIN_KEY:   'ki_admin_session',
 
-  getUsers() {
-    try { return JSON.parse(localStorage.getItem(Auth.USERS_KEY) || '[]'); }
-    catch { return []; }
-  },
-
-  saveUsers(users) {
-    localStorage.setItem(Auth.USERS_KEY, JSON.stringify(users));
-  },
-
+  /* ---- Synchronous local cache read (used by Cart._key()) ---- */
   getCurrentUser() {
     try { return JSON.parse(localStorage.getItem(Auth.SESSION_KEY) || 'null'); }
     catch { return null; }
   },
 
-  register({ name, email, phone, password }) {
-    const users = Auth.getUsers();
-    if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
-      return { ok: false, error: 'Пользователь с таким email уже зарегистрирован' };
+  /* ---- Sync session from server (call on page load) ---- */
+  async syncSession() {
+    try {
+      const res  = await fetch('/api/auth/me.php', { credentials: 'include' });
+      const json = await res.json();
+      if (!json.ok || !json.data) {
+        localStorage.removeItem(Auth.SESSION_KEY);
+        localStorage.removeItem(Auth.ADMIN_KEY);
+        Auth.updateHeaderUI();
+        return null;
+      }
+      if (json.data.is_admin) {
+        localStorage.setItem(Auth.ADMIN_KEY, '1');
+        localStorage.removeItem(Auth.SESSION_KEY);
+        Auth.updateHeaderUI();
+        return { is_admin: true };
+      }
+      localStorage.setItem(Auth.SESSION_KEY, JSON.stringify(json.data));
+      localStorage.removeItem(Auth.ADMIN_KEY);
+      Auth.updateHeaderUI();
+      return json.data;
+    } catch (e) {
+      console.warn('Auth.syncSession error:', e);
+      return null;
     }
-    const user = { id: Date.now().toString(), name, email: email.toLowerCase(), phone, password, createdAt: new Date().toISOString() };
-    users.push(user);
-    Auth.saveUsers(users);
-    Auth._startSession(user);
-    return { ok: true, user };
   },
 
-  login({ email, password }) {
-    const users = Auth.getUsers();
-    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
-    if (!user) return { ok: false, error: 'Неверный email или пароль' };
-    Auth._startSession(user);
-    return { ok: true, user };
+  /* ---- Login ---- */
+  async login({ email, password }) {
+    try {
+      const res  = await fetch('/api/auth/login.php', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const json = await res.json();
+      if (!json.ok) return { ok: false, error: json.error };
+
+      if (json.data && json.data.is_admin) {
+        localStorage.setItem(Auth.ADMIN_KEY, '1');
+        localStorage.removeItem(Auth.SESSION_KEY);
+        window.location.href = 'admin.html';
+        return { ok: true, is_admin: true };
+      }
+
+      localStorage.setItem(Auth.SESSION_KEY, JSON.stringify(json.data));
+      localStorage.removeItem(Auth.ADMIN_KEY);
+      Auth.updateHeaderUI();
+      return { ok: true, user: json.data };
+    } catch (e) {
+      return { ok: false, error: 'Ошибка соединения с сервером' };
+    }
   },
 
-  logout() {
+  /* ---- Register ---- */
+  async register({ name, email, phone, password }) {
+    try {
+      const res  = await fetch('/api/auth/register.php', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, phone, password }),
+      });
+      const json = await res.json();
+      if (!json.ok) return { ok: false, error: json.error };
+
+      localStorage.setItem(Auth.SESSION_KEY, JSON.stringify(json.data));
+      localStorage.removeItem(Auth.ADMIN_KEY);
+      Auth.updateHeaderUI();
+      return { ok: true, user: json.data };
+    } catch (e) {
+      return { ok: false, error: 'Ошибка соединения с сервером' };
+    }
+  },
+
+  /* ---- Logout ---- */
+  async logout() {
+    try {
+      await fetch('/api/auth/logout.php', {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch (e) {
+      console.warn('Logout request failed:', e);
+    }
     localStorage.removeItem(Auth.SESSION_KEY);
+    localStorage.removeItem(Auth.ADMIN_KEY);
     Auth.updateHeaderUI();
   },
 
-  _startSession(user) {
-    const session = { id: user.id, name: user.name, email: user.email, phone: user.phone };
-    localStorage.setItem(Auth.SESSION_KEY, JSON.stringify(session));
-    Auth.updateHeaderUI();
+  /* ---- Update profile ---- */
+  async updateProfile({ name, phone }) {
+    try {
+      const res  = await fetch('/api/auth/profile.php', {
+        method: 'PUT',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, phone }),
+      });
+      const json = await res.json();
+      if (!json.ok) return { ok: false, error: json.error };
+
+      localStorage.setItem(Auth.SESSION_KEY, JSON.stringify(json.data));
+      Auth.updateHeaderUI();
+      return { ok: true, user: json.data };
+    } catch (e) {
+      return { ok: false, error: 'Ошибка соединения с сервером' };
+    }
   },
 
-  updateProfile({ name, phone }) {
-    const session = Auth.getCurrentUser();
-    if (!session) return;
-    const users = Auth.getUsers();
-    const user = users.find(u => u.id === session.id);
-    if (!user) return;
-    user.name = name;
-    user.phone = phone;
-    Auth.saveUsers(users);
-    const updated = { ...session, name, phone };
-    localStorage.setItem(Auth.SESSION_KEY, JSON.stringify(updated));
-    Auth.updateHeaderUI();
-  },
-
+  /* ---- Update header UI ---- */
   updateHeaderUI() {
     const user = Auth.getCurrentUser();
     const authBtnEl  = document.querySelector('.auth-btn');

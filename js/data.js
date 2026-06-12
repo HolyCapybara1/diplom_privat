@@ -207,11 +207,7 @@ var SERVICES = [
   }
 ];
 
-// Expose globally — if admin saved edits, use those instead of hardcoded list
-try {
-  const saved = localStorage.getItem('ki_admin_products');
-  window.PRODUCTS = saved ? JSON.parse(saved) : PRODUCTS;
-} catch (e) {
-  window.PRODUCTS = PRODUCTS;
-}
+// Expose globally — products are loaded from API in catalog.js/admin.html
+// Keeping PRODUCTS as fallback for pages that don't load from API (e.g. index.html)
+window.PRODUCTS = PRODUCTS;
 window.SERVICES = SERVICES;

@@ -13,4 +13,4 @@ if (ini_get('session.use_cookies')) {
 }
 session_destroy();
 
-json_success(['message' => 'Выход выполнен']);
+json_success(['message' => 'Logged out']);

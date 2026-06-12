@@ -9,25 +9,22 @@ $email    = strtolower(trim($body['email']    ?? ''));
 $phone    = trim($body['phone']    ?? '');
 $password = $body['password'] ?? '';
 
-// Validation
-if (!$name)                             json_error('Укажите имя');
-if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) json_error('Укажите корректный email');
-if (strlen($password) < 6)             json_error('Пароль должен быть не менее 6 символов');
+if (!$name || !$email || !$password) json_error('Заполните обязательные поля');
+if (!filter_var($email, FILTER_VALIDATE_EMAIL)) json_error('Некорректный email');
+if (strlen($password) < 6) json_error('Пароль должен быть не менее 6 символов');
 
-$pdo = db();
+$db = db();
 
 // Check duplicate email
-$stmt = $pdo->prepare('SELECT id FROM users WHERE email = ?');
+$stmt = $db->prepare('SELECT id FROM users WHERE email = ?');
 $stmt->execute([$email]);
-if ($stmt->fetch()) {
-    json_error('Пользователь с таким email уже зарегистрирован');
-}
+if ($stmt->fetch()) json_error('Пользователь с таким email уже зарегистрирован');
 
 // Insert user
 $hash = password_hash($password, PASSWORD_DEFAULT);
-$stmt = $pdo->prepare('INSERT INTO users (name, email, phone, password, created_at) VALUES (?, ?, ?, ?, NOW())');
+$stmt = $db->prepare('INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)');
 $stmt->execute([$name, $email, $phone, $hash]);
-$userId = (int)$pdo->lastInsertId();
+$userId = (int)$db->lastInsertId();
 
 // Start session
 $_SESSION['user_id']    = $userId;

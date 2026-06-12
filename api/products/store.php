@@ -2,50 +2,49 @@
 require_once __DIR__ . '/../config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') json_error('Method not allowed', 405);
+
 require_admin();
 
 $body = get_body();
 
-$name     = trim($body['name']     ?? '');
-$brand    = trim($body['brand']    ?? '');
-$category = trim($body['category'] ?? 'split');
-$price    = (float)($body['price'] ?? 0);
+$name          = trim($body['name']          ?? '');
+$brand         = trim($body['brand']         ?? '');
+$category      = trim($body['category']      ?? 'split');
+$category_label = trim($body['categoryLabel'] ?? '');
+$model         = trim($body['model']         ?? '');
+$description   = trim($body['desc']          ?? $body['description'] ?? '');
+$price         = (float)($body['price']      ?? 0);
+$old_price     = isset($body['oldPrice']) && $body['oldPrice'] !== null && $body['oldPrice'] !== ''
+                    ? (float)$body['oldPrice'] : null;
+$power         = trim($body['power']         ?? '');
+$area          = trim($body['area']          ?? '');
+$noise         = trim($body['noise']         ?? '');
+$emoji         = trim($body['emoji']         ?? '❄️');
+$badge         = $body['badge']              ?? null;
+$badge_type    = $body['badgeType']          ?? null;
+$specs         = json_encode($body['specs']    ?? [], JSON_UNESCAPED_UNICODE);
+$features      = json_encode($body['features'] ?? [], JSON_UNESCAPED_UNICODE);
 
-if (!$name || !$brand || $price <= 0) json_error('Заполните обязательные поля (name, brand, price)');
+if (!$name || !$brand || !$price) json_error('Заполните обязательные поля (name, brand, price)');
 
 $catLabels = ['split' => 'Сплит-система', 'cassette' => 'Кассетный кондиционер', 'duct' => 'Канальный кондиционер', 'ventilation' => 'Вентиляция'];
-$categoryLabel = $body['categoryLabel'] ?? ($catLabels[$category] ?? $category);
+if (!$category_label) $category_label = $catLabels[$category] ?? $category;
 
-$specs    = json_encode($body['specs']    ?? [], JSON_UNESCAPED_UNICODE);
-$features = json_encode($body['features'] ?? [], JSON_UNESCAPED_UNICODE);
-
-$pdo  = db();
-$stmt = $pdo->prepare('
-    INSERT INTO products (category, category_label, brand, model, name, description, price, old_price, power, area, noise, specs, emoji, badge, badge_type, features, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+$db   = db();
+$stmt = $db->prepare('
+    INSERT INTO products
+        (category, category_label, brand, model, name, description, price, old_price, power, area, noise, specs, emoji, badge, badge_type, features)
+    VALUES
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ');
 $stmt->execute([
-    $category,
-    $categoryLabel,
-    $brand,
-    $body['model']    ?? '',
-    $name,
-    $body['desc']     ?? '',
-    $price,
-    !empty($body['oldPrice']) ? (float)$body['oldPrice'] : null,
-    $body['power']    ?? '',
-    $body['area']     ?? '',
-    $body['noise']    ?? '',
-    $specs,
-    $body['emoji']    ?? '❄️',
-    !empty($body['badge'])     ? $body['badge']     : null,
-    !empty($body['badgeType']) ? $body['badgeType'] : null,
-    $features,
+    $category, $category_label, $brand, $model, $name, $description,
+    $price, $old_price, $power, $area, $noise, $specs, $emoji, $badge, $badge_type, $features
 ]);
-$id = (int)$pdo->lastInsertId();
 
-$stmt2 = $pdo->prepare('SELECT * FROM products WHERE id = ?');
-$stmt2->execute([$id]);
-$product = map_product($stmt2->fetch());
+$id  = (int)$db->lastInsertId();
+$row = $db->prepare('SELECT * FROM products WHERE id = ?');
+$row->execute([$id]);
+$product = map_product($row->fetch());
 
 json_success($product, 201);

@@ -9,10 +9,10 @@ $body  = get_body();
 $name  = trim($body['name']  ?? '');
 $phone = trim($body['phone'] ?? '');
 
-if (!$name) json_error('Укажите имя');
+if (!$name) json_error('Имя обязательно');
 
-$pdo  = db();
-$stmt = $pdo->prepare('UPDATE users SET name = ?, phone = ? WHERE id = ?');
+$db   = db();
+$stmt = $db->prepare('UPDATE users SET name = ?, phone = ? WHERE id = ?');
 $stmt->execute([$name, $phone, $session['id']]);
 
 // Update session

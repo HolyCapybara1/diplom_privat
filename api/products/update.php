@@ -2,63 +2,63 @@
 require_once __DIR__ . '/../config.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'PUT') json_error('Method not allowed', 405);
+
 require_admin();
 
 $id = (int)($_GET['id'] ?? 0);
 if (!$id) json_error('Не указан id товара');
 
-$body  = get_body();
-$name  = trim($body['name']  ?? '');
-$brand = trim($body['brand'] ?? '');
-$price = (float)($body['price'] ?? 0);
+$db   = db();
+$stmt = $db->prepare('SELECT id FROM products WHERE id = ?');
+$stmt->execute([$id]);
+if (!$stmt->fetch()) json_error('Товар не найден', 404);
 
-if (!$name || !$brand || $price <= 0) json_error('Заполните обязательные поля (name, brand, price)');
+$body = get_body();
 
-$category = trim($body['category'] ?? 'split');
 $catLabels = ['split' => 'Сплит-система', 'cassette' => 'Кассетный кондиционер', 'duct' => 'Канальный кондиционер', 'ventilation' => 'Вентиляция'];
-$categoryLabel = $body['categoryLabel'] ?? ($catLabels[$category] ?? $category);
+$category  = trim($body['category'] ?? 'split');
+$category_label = trim($body['categoryLabel'] ?? ($catLabels[$category] ?? $category));
 
-$specs    = json_encode($body['specs']    ?? [], JSON_UNESCAPED_UNICODE);
-$features = json_encode($body['features'] ?? [], JSON_UNESCAPED_UNICODE);
-
-$pdo  = db();
-$stmt = $pdo->prepare('
+$stmt = $db->prepare('
     UPDATE products SET
-        category = ?, category_label = ?, brand = ?, model = ?, name = ?,
-        description = ?, price = ?, old_price = ?,
-        power = ?, area = ?, noise = ?, specs = ?,
-        emoji = ?, badge = ?, badge_type = ?, features = ?
+        category      = ?,
+        category_label = ?,
+        brand         = ?,
+        model         = ?,
+        name          = ?,
+        description   = ?,
+        price         = ?,
+        old_price     = ?,
+        power         = ?,
+        area          = ?,
+        noise         = ?,
+        specs         = ?,
+        emoji         = ?,
+        badge         = ?,
+        badge_type    = ?,
+        features      = ?
     WHERE id = ?
 ');
 $stmt->execute([
     $category,
-    $categoryLabel,
-    $brand,
-    $body['model']    ?? '',
-    $name,
-    $body['desc']     ?? '',
-    $price,
-    !empty($body['oldPrice']) ? (float)$body['oldPrice'] : null,
-    $body['power']    ?? '',
-    $body['area']     ?? '',
-    $body['noise']    ?? '',
-    $specs,
-    $body['emoji']    ?? '❄️',
-    !empty($body['badge'])     ? $body['badge']     : null,
-    !empty($body['badgeType']) ? $body['badgeType'] : null,
-    $features,
+    $category_label,
+    trim($body['brand']       ?? ''),
+    trim($body['model']       ?? ''),
+    trim($body['name']        ?? ''),
+    trim($body['desc']        ?? $body['description'] ?? ''),
+    (float)($body['price']    ?? 0),
+    isset($body['oldPrice']) && $body['oldPrice'] !== null && $body['oldPrice'] !== '' ? (float)$body['oldPrice'] : null,
+    trim($body['power']       ?? ''),
+    trim($body['area']        ?? ''),
+    trim($body['noise']       ?? ''),
+    json_encode($body['specs']    ?? [], JSON_UNESCAPED_UNICODE),
+    trim($body['emoji']       ?? '❄️'),
+    $body['badge']            ?? null,
+    $body['badgeType']        ?? null,
+    json_encode($body['features'] ?? [], JSON_UNESCAPED_UNICODE),
     $id,
 ]);
 
-if ($stmt->rowCount() === 0) {
-    // Check if product exists
-    $check = $pdo->prepare('SELECT id FROM products WHERE id = ?');
-    $check->execute([$id]);
-    if (!$check->fetch()) json_error('Товар не найден', 404);
-}
-
-$stmt2 = $pdo->prepare('SELECT * FROM products WHERE id = ?');
-$stmt2->execute([$id]);
-$product = map_product($stmt2->fetch());
-
-json_success($product);
+$row = $db->prepare('SELECT * FROM products WHERE id = ?');
+$row->execute([$id]);
+json_success(map_product($row->fetch()));

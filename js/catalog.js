@@ -1,5 +1,5 @@
 /* ===== CATALOG PAGE LOGIC ===== */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   if (!document.querySelector('.catalog-layout')) return;
 
   const grid = document.getElementById('productsGrid');
@@ -93,6 +93,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     grid.innerHTML = items.map(p => renderProductCard(p)).join('');
     attachCartButtons(grid);
+  }
+
+  // Load products from API, then render
+  if (grid) grid.innerHTML = '<div style="padding:3rem;text-align:center;color:var(--gray)">⏳ Загрузка каталога...</div>';
+  try {
+    const res  = await fetch('/api/products/index.php');
+    const json = await res.json();
+    if (json.ok && Array.isArray(json.data)) {
+      window.PRODUCTS = json.data;
+    }
+  } catch (e) {
+    console.warn('Catalog API error, falling back to local data:', e);
+    // PRODUCTS from data.js is still available as fallback
   }
 
   render();

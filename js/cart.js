@@ -115,14 +115,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const formData = new FormData(orderForm);
     const name    = formData.get('name');
     const phone   = formData.get('phone');
-    const email   = formData.get('email') || '—';
-    const address = formData.get('address') || '—';
-    const comment = formData.get('comment') || '—';
+    const email   = formData.get('email') || '';
+    const address = formData.get('address') || '';
+    const comment = formData.get('comment') || '';
     const total   = formatPrice(Cart.total());
 
     const itemsText = items.map(i => `${i.name} × ${i.qty} — ${formatPrice(i.price * i.qty)}`).join('\n');
 
-    // EmailJS send
+    // EmailJS send (optional - works alongside API)
     try {
       const serviceId  = 'YOUR_SERVICE_ID';   // Replace with your EmailJS service ID
       const templateId = 'YOUR_TEMPLATE_ID';  // Replace with your EmailJS template ID
@@ -141,30 +141,34 @@ document.addEventListener('DOMContentLoaded', () => {
         }, publicKey);
       }
       // Always show success (demo mode if keys not set)
-      showSuccess(name);
+      await showSuccess(name, formData);
     } catch (err) {
       console.error('EmailJS error:', err);
-      // Even if sending fails, show success to user (save to console)
-      showSuccess(name);
+      // Even if sending fails, show success to user
+      await showSuccess(name, formData);
     }
   });
 
-  function showSuccess(name) {
-    // Save order to history if user is logged in
-    const user = typeof Auth !== 'undefined' ? Auth.getCurrentUser() : null;
-    if (user) {
-      const key = `ki_orders_${user.id}`;
-      const orders = JSON.parse(localStorage.getItem(key) || '[]');
-      const formData2 = new FormData(orderForm);
-      orders.push({
-        id: Date.now().toString().slice(-6),
-        date: new Date().toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
-        status: 'Новый',
-        items: Cart.getItems().map(i => ({ name: i.name, qty: i.qty })),
-        total: Cart.total(),
-        address: formData2.get('address') || ''
+  async function showSuccess(name, formData) {
+    // Save order to API
+    const items = Cart.getItems();
+    try {
+      await fetch('/api/orders/store.php', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name:    formData.get('name')    || name,
+          phone:   formData.get('phone')   || '',
+          email:   formData.get('email')   || '',
+          address: formData.get('address') || '',
+          comment: formData.get('comment') || '',
+          items:   items.map(i => ({ id: i.id, name: i.name, qty: i.qty, price: i.price })),
+          total:   Cart.total(),
+        }),
       });
-      localStorage.setItem(key, JSON.stringify(orders));
+    } catch (e) {
+      console.warn('Order save API error:', e);
     }
 
     Cart.clear();

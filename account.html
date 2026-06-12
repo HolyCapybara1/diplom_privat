@@ -278,7 +278,17 @@
 <script src="js/auth.js"></script>
 <script src="js/main.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+
+  // Sync session from server first
+  const serverSession = await Auth.syncSession();
+
+  // Check if admin — redirect to admin panel
+  if (serverSession && serverSession.is_admin) {
+    window.location.href = 'admin.html';
+    return;
+  }
+
   const user = Auth.getCurrentUser();
 
   // Show correct page
@@ -304,39 +314,49 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ===== LOGIN =====
-  document.getElementById('loginBtn').addEventListener('click', () => {
+  document.getElementById('loginBtn').addEventListener('click', async () => {
     const email    = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
     const errEl    = document.getElementById('loginError');
+    const btn      = document.getElementById('loginBtn');
     if (!email || !password) { showAuthError(errEl, 'Заполните все поля'); return; }
 
-    // Admin shortcut: login=admin, password=admin123
-    if (email === 'admin' && password === 'admin123') {
-      localStorage.setItem('ki_admin_session', '1');
-      window.location.href = 'admin.html';
-      return;
-    }
+    btn.disabled = true;
+    btn.textContent = 'Вход...';
 
-    const result = Auth.login({ email, password });
+    const result = await Auth.login({ email, password });
+
+    btn.disabled = false;
+    btn.textContent = 'Войти';
+
     if (!result.ok) { showAuthError(errEl, result.error); return; }
+    if (result.is_admin) return; // redirect handled in Auth.login
     showCabinet(result.user);
   });
 
   // ===== REGISTER =====
-  document.getElementById('registerBtn').addEventListener('click', () => {
+  document.getElementById('registerBtn').addEventListener('click', async () => {
     const name  = document.getElementById('regName').value.trim();
     const phone = document.getElementById('regPhone').value.trim();
     const email = document.getElementById('regEmail').value.trim();
     const pass  = document.getElementById('regPassword').value;
     const pass2 = document.getElementById('regPassword2').value;
     const errEl = document.getElementById('registerError');
+    const btn   = document.getElementById('registerBtn');
 
     if (!name || !email || !pass)       { showAuthError(errEl, 'Заполните обязательные поля'); return; }
     if (pass.length < 6)                { showAuthError(errEl, 'Пароль должен быть не менее 6 символов'); return; }
     if (pass !== pass2)                 { showAuthError(errEl, 'Пароли не совпадают'); return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAuthError(errEl, 'Введите корректный email'); return; }
 
-    const result = Auth.register({ name, email, phone, password: pass });
+    btn.disabled = true;
+    btn.textContent = 'Регистрация...';
+
+    const result = await Auth.register({ name, email, phone, password: pass });
+
+    btn.disabled = false;
+    btn.textContent = 'Создать аккаунт';
+
     if (!result.ok) { showAuthError(errEl, result.error); return; }
     showCabinet(result.user);
   });
@@ -378,23 +398,25 @@ document.addEventListener('DOMContentLoaded', () => {
       item.classList.add('active');
       document.getElementById(`panel-${item.dataset.panel}`).classList.add('active');
       if (item.dataset.panel === 'cart') renderAccountCart();
+      if (item.dataset.panel === 'orders') renderOrders();
     });
   });
 
   // ===== LOGOUT =====
-  document.getElementById('logoutBtn').addEventListener('click', () => {
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
     if (confirm('Выйти из аккаунта?')) {
-      Auth.logout();
+      await Auth.logout();
       window.location.reload();
     }
   });
 
   // ===== SAVE PROFILE =====
-  document.getElementById('saveProfileBtn').addEventListener('click', () => {
+  document.getElementById('saveProfileBtn').addEventListener('click', async () => {
     const name  = document.getElementById('editName').value.trim();
     const phone = document.getElementById('editPhone').value.trim();
     if (!name) return;
-    Auth.updateProfile({ name, phone });
+    const result = await Auth.updateProfile({ name, phone });
+    if (!result || !result.ok) return;
     const user = Auth.getCurrentUser();
     const initials = user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
     document.getElementById('sidebarAvatar').textContent    = initials;
@@ -440,27 +462,36 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ===== RENDER ORDERS =====
-  function renderOrders() {
-    const user = Auth.getCurrentUser();
-    if (!user) return;
-    const key = `ki_orders_${user.id}`;
-    const orders = JSON.parse(localStorage.getItem(key) || '[]');
+  // ===== RENDER ORDERS (from API) =====
+  async function renderOrders() {
     const container = document.getElementById('ordersContainer');
-    if (!orders.length) {
-      container.innerHTML = `<div class="panel-empty"><div class="icon">📋</div><h3>Заказов пока нет</h3><p>Оформите первый заказ через корзину</p><a href="catalog.html" class="btn btn-primary" style="margin-top:1rem">Перейти в каталог</a></div>`;
-      return;
+    container.innerHTML = '<p style="padding:1rem;color:var(--gray)">⏳ Загрузка заказов...</p>';
+    try {
+      const res  = await fetch('/api/orders/index.php', { credentials: 'include' });
+      const json = await res.json();
+      if (!json.ok) {
+        container.innerHTML = `<div class="panel-empty"><div class="icon">📋</div><h3>Заказов пока нет</h3><p>Оформите первый заказ через корзину</p><a href="catalog.html" class="btn btn-primary" style="margin-top:1rem">Перейти в каталог</a></div>`;
+        return;
+      }
+      const orders = json.data;
+      if (!orders.length) {
+        container.innerHTML = `<div class="panel-empty"><div class="icon">📋</div><h3>Заказов пока нет</h3><p>Оформите первый заказ через корзину</p><a href="catalog.html" class="btn btn-primary" style="margin-top:1rem">Перейти в каталог</a></div>`;
+        return;
+      }
+      const statusClass = s => s === 'Новый' ? 'new' : s === 'Выполнен' ? 'done' : s === 'Отменён' ? 'cancelled' : 'processing';
+      container.innerHTML = orders.map(o => `
+        <div class="order-card">
+          <div class="order-card-header">
+            <span class="order-num">Заказ #${o.order_num}</span>
+            <span class="order-date">${o.date}</span>
+            <span class="order-status ${statusClass(o.status)}">${o.status}</span>
+          </div>
+          <div class="order-items">${(o.items || []).map(i => `${i.name} × ${i.qty}`).join(', ')}</div>
+          <div class="order-total"><span>Сумма заказа</span><span class="val">${(o.total || 0).toLocaleString('ru-RU')} ₽</span></div>
+        </div>`).join('');
+    } catch (e) {
+      container.innerHTML = `<div class="panel-empty"><div class="icon">⚠️</div><h3>Ошибка загрузки</h3><p>Не удалось загрузить историю заказов</p></div>`;
     }
-    container.innerHTML = orders.slice().reverse().map(o => `
-      <div class="order-card">
-        <div class="order-card-header">
-          <span class="order-num">Заказ #${o.id}</span>
-          <span class="order-date">${o.date}</span>
-          <span class="order-status ${o.status === 'Новый' ? 'new' : 'done'}">${o.status}</span>
-        </div>
-        <div class="order-items">${o.items.map(i => `${i.name} × ${i.qty}`).join(', ')}</div>
-        <div class="order-total"><span>Сумма заказа</span><span class="val">${o.total.toLocaleString('ru-RU')} ₽</span></div>
-      </div>`).join('');
   }
 });
 </script>
