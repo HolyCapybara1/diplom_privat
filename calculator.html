@@ -307,6 +307,23 @@
   </div>
 </section>
 
+<!-- ===== РЕКОМЕНДАЦИИ ПОД РАСЧЁТ ===== -->
+<section class="section" id="recommendSection">
+  <div class="container">
+    <div class="section-header" style="text-align:center;margin-bottom:2rem">
+      <h2>🎯 Рекомендуем под ваш расчёт</h2>
+      <p style="color:var(--gray)">Оборудование и услуги, подобранные под выбранные параметры</p>
+    </div>
+
+    <div id="recommendServices" style="margin-bottom:2rem"></div>
+
+    <h3 style="margin-bottom:1rem">Подходящее оборудование</h3>
+    <div class="products-grid" id="recommendGrid">
+      <div style="grid-column:1/-1;padding:2rem;text-align:center;color:var(--gray)">⏳ Подбираем оборудование...</div>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer class="footer">
   <div class="footer-main">
@@ -398,9 +415,84 @@ function calc() {
   if (state.brandTier) filled += 20;
   if (state.qty >= 1) filled += 20;
   document.getElementById('progressFill').style.width = filled + '%';
+
+  // Подбор товаров и услуг под параметры расчёта
+  renderRecommendations(eqPrice / units);
 }
 
 function formatNum(n) { return Math.round(n).toLocaleString('ru-RU'); }
+
+/* ===== ПОДБОР ТОВАРОВ И УСЛУГ ПОД РАСЧЁТ ===== */
+const tierBrands = {
+  economy:  ['Haier', 'LG'],
+  standard: ['Samsung', 'Panasonic'],
+  premium:  ['Daikin', 'Mitsubishi Electric']
+};
+let allProducts = [];
+
+async function loadProducts() {
+  try {
+    const res  = await fetch('/api/products/index.php');
+    const json = await res.json();
+    if (json.ok && Array.isArray(json.data)) {
+      allProducts = json.data;
+      window.PRODUCTS = json.data; // чтобы кнопки «В корзину» нашли товар по id
+    }
+  } catch (e) {
+    allProducts = window.PRODUCTS || [];
+  }
+}
+
+function renderRecommendations(perUnitBudget) {
+  const grid = document.getElementById('recommendGrid');
+  if (!grid) return;
+
+  if (!allProducts.length) return; // ещё загружается
+
+  // Подбираем оборудование нужного типа, отдаём приоритет бренду выбранного класса
+  // и цене, близкой к рассчитанному бюджету за единицу
+  const brands = tierBrands[state.brandTier] || [];
+  let items = allProducts.filter(p => p.category === state.systemType);
+  if (!items.length) items = allProducts.slice();
+
+  items = items
+    .map(p => {
+      let score = Math.abs((p.price || 0) - perUnitBudget);
+      if (brands.includes(p.brand)) score -= 1000000; // бренды выбранного класса — в начало
+      return { p, score };
+    })
+    .sort((a, b) => a.score - b.score)
+    .slice(0, 3)
+    .map(x => x.p);
+
+  if (!items.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;padding:2rem;text-align:center;color:var(--gray)">Нет подходящего оборудования</div>';
+  } else {
+    grid.innerHTML = items.map(p => renderProductCard(p)).join('');
+    attachCartButtons(grid);
+  }
+
+  // Рекомендованные услуги — из выбранных опций калькулятора
+  const svc = [];
+  if (state.install)     svc.push({ icon: '🔧', name: 'Монтаж и пуско-наладка', price: 8000 * state.qty });
+  if (state.maintenance) svc.push({ icon: '🛠️', name: 'Первое ТО', price: 3500 * state.qty });
+  if (state.design)      svc.push({ icon: '📐', name: 'Проектирование системы', price: 15000 });
+  if (state.wifi)        svc.push({ icon: '📱', name: 'Wi-Fi модуль и настройка', price: 4500 * state.qty });
+
+  const sc = document.getElementById('recommendServices');
+  if (sc) {
+    sc.innerHTML = svc.length ? `
+      <h3 style="margin-bottom:1rem">Рекомендованные услуги</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:0.75rem">
+        ${svc.map(s => `
+          <div style="display:flex;align-items:center;gap:0.6rem;background:var(--white);border:1.5px solid var(--gray-light);border-radius:10px;padding:0.75rem 1rem">
+            <span style="font-size:1.3rem">${s.icon}</span>
+            <span style="font-weight:600">${s.name}</span>
+            <span style="color:var(--accent);font-weight:700">+${formatNum(s.price)} ₽</span>
+          </div>`).join('')}
+      </div>` : '';
+  }
+}
 
 // Option buttons
 document.querySelectorAll('.option-btn').forEach(btn => {
@@ -439,6 +531,8 @@ document.getElementById('qtyRange').addEventListener('input', function() {
 });
 
 calc();
+// Загружаем товары из API и пересчитываем, чтобы показать рекомендации
+loadProducts().then(() => calc());
 </script>
 </body>
 </html>

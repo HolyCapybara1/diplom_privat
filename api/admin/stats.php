@@ -10,8 +10,10 @@ $db = db();
 $products_count = (int)$db->query('SELECT COUNT(*) FROM products')->fetchColumn();
 $users_count    = (int)$db->query('SELECT COUNT(*) FROM users')->fetchColumn();
 $orders_count   = (int)$db->query('SELECT COUNT(*) FROM orders')->fetchColumn();
-$revenue        = (float)$db->query("SELECT COALESCE(SUM(total), 0) FROM orders WHERE status != 'Отменён'")->fetchColumn();
-$new_orders     = (int)$db->query("SELECT COUNT(*) FROM orders WHERE status = 'Новый'")->fetchColumn();
+// Выручка считается ТОЛЬКО по выполненным заказам
+$revenue          = (float)$db->query("SELECT COALESCE(SUM(total), 0) FROM orders WHERE status = 'Выполнен'")->fetchColumn();
+$completed_orders = (int)$db->query("SELECT COUNT(*) FROM orders WHERE status = 'Выполнен'")->fetchColumn();
+$new_orders       = (int)$db->query("SELECT COUNT(*) FROM orders WHERE status = 'Новый'")->fetchColumn();
 
 // Orders by month (last 7 days)
 $by_month = [];
@@ -46,6 +48,7 @@ json_success([
     'users'    => $users_count,
     'orders'   => $orders_count,
     'revenue'  => $revenue,
+    'completed' => $completed_orders,
     'new_orders' => $new_orders,
     'by_month'   => $by_month,
     'by_category' => $by_category,
