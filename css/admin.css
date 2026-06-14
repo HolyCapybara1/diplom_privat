@@ -214,7 +214,13 @@ table.adm-table { width: 100%; border-collapse: collapse; }
 .order-status-pill.done { background: rgba(39,174,96,0.15); color: #27ae60; }
 .order-status-pill.cancelled { background: rgba(231,76,60,0.15); color: #e74c3c; }
 .td-price { font-weight: 700; color: var(--adm-accent2); }
-.td-name { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.td-name { max-width: 200px; }
+.td-name .order-items-link {
+  display: inline-block; max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  vertical-align: middle; cursor: pointer; color: var(--adm-accent2);
+  border-bottom: 1px dotted var(--adm-accent2);
+}
+.td-name .order-items-link:hover { color: #fff; }
 
 /* Edit inline */
 .editable-input {

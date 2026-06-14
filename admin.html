@@ -326,6 +326,20 @@
   </div>
 </div>
 
+<!-- ===== ORDER DETAILS MODAL ===== -->
+<div class="adm-modal-overlay" id="orderModal" style="display:none">
+  <div class="adm-modal">
+    <div class="adm-modal-header">
+      <h3 id="orderModalTitle">Заказ</h3>
+      <button class="adm-modal-close" id="orderModalClose">✕</button>
+    </div>
+    <div class="adm-modal-body" id="orderModalBody"></div>
+    <div class="adm-modal-footer">
+      <button class="adm-btn adm-btn-primary" id="orderModalOk">Закрыть</button>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="adm-toast" id="admToast"></div>
 
@@ -444,6 +458,7 @@ async function initDashboard() {
     const ordersRes  = await fetch('/api/admin/orders.php', { credentials: 'include' });
     const ordersJson = await ordersRes.json();
     const orders = ordersJson.ok ? ordersJson.data : [];
+    _allOrders = orders; // для модалки деталей с дашборда
 
     const tbody  = document.getElementById('recentOrdersBody');
     const recent = orders.slice(0, 6);
@@ -451,7 +466,7 @@ async function initDashboard() {
       <tr>
         <td>#${o.order_num}</td>
         <td>${o.user_name || o.name}</td>
-        <td class="td-name">${(o.items || []).map(i => i.name).join(', ') || '—'}</td>
+        <td class="td-name"><span class="order-items-link" onclick="openOrderDetails(${o.id})" title="Показать все позиции">${(o.items || []).map(i => i.name).join(', ') || '—'}</span></td>
         <td class="td-price">${formatMoney(o.total)}</td>
         <td>${o.date}</td>
         <td><span class="order-status-pill ${statusClass(o.status)}">${o.status}</span></td>
@@ -707,7 +722,10 @@ async function renderOrders(search = '', statusFilter = '') {
       <td>#${o.order_num}</td>
       <td>${o.user_name || o.name}</td>
       <td style="color:var(--adm-muted);font-size:0.8rem">${o.user_email || o.email}</td>
-      <td class="td-name" title="${(o.items||[]).map(i=>i.name).join(', ')}">${(o.items||[]).map(i => `${i.name} ×${i.qty}`).join(', ') || '—'}</td>
+      <td class="td-name">
+        <span class="order-items-link" onclick="openOrderDetails(${o.id})" title="Показать все позиции">${(o.items||[]).map(i => `${i.name} ×${i.qty}`).join(', ') || '—'}</span>
+        <button class="adm-btn adm-btn-sm" style="margin-left:0.4rem;padding:2px 8px" onclick="openOrderDetails(${o.id})">👁 ${(o.items||[]).length}</button>
+      </td>
       <td class="td-price">${formatMoney(o.total)}</td>
       <td>${o.date}</td>
       <td>
@@ -739,6 +757,47 @@ window.updateOrderStatus = async function(orderId, newStatus) {
   }
 };
 
+/* ===== ДЕТАЛИ ЗАКАЗА (все позиции) ===== */
+function openOrderDetails(id) {
+  const o = (_allOrders || []).find(x => x.id === id);
+  if (!o) { showAdmToast('Заказ не найден', true); return; }
+
+  const items = o.items || [];
+  const rows = items.map(i => `
+    <tr>
+      <td>${i.emoji || '📦'} ${i.name}</td>
+      <td style="text-align:center">${i.qty || 1}</td>
+      <td class="td-price">${formatMoney(i.price || 0)}</td>
+      <td class="td-price">${formatMoney((i.price || 0) * (i.qty || 1))}</td>
+    </tr>`).join('');
+
+  document.getElementById('orderModalTitle').textContent = `Заказ #${o.order_num}`;
+  document.getElementById('orderModalBody').innerHTML = `
+    <div style="margin-bottom:1.25rem;font-size:0.88rem;line-height:1.9;color:var(--adm-muted)">
+      <div><b style="color:var(--adm-text)">Клиент:</b> ${o.user_name || o.name || '—'}</div>
+      <div><b style="color:var(--adm-text)">Телефон:</b> ${o.phone || '—'}</div>
+      <div><b style="color:var(--adm-text)">Email:</b> ${o.user_email || o.email || '—'}</div>
+      <div><b style="color:var(--adm-text)">Адрес:</b> ${o.address || '—'}</div>
+      ${o.comment && o.comment !== '—' ? `<div><b style="color:var(--adm-text)">Комментарий:</b> ${o.comment}</div>` : ''}
+      <div><b style="color:var(--adm-text)">Дата:</b> ${o.date} &nbsp;·&nbsp; <span class="order-status-pill ${statusClass(o.status)}">${o.status}</span></div>
+    </div>
+    <table class="adm-table">
+      <thead><tr><th>Позиция</th><th style="text-align:center">Кол-во</th><th>Цена</th><th>Сумма</th></tr></thead>
+      <tbody>${rows || '<tr><td colspan="4" style="text-align:center;color:var(--adm-muted)">Нет позиций</td></tr>'}</tbody>
+      <tfoot><tr>
+        <td colspan="3" style="text-align:right;font-weight:700;padding-top:0.75rem">ИТОГО:</td>
+        <td class="td-price" style="font-weight:800;padding-top:0.75rem">${formatMoney(o.total)}</td>
+      </tr></tfoot>
+    </table>`;
+  document.getElementById('orderModal').style.display = 'flex';
+}
+window.openOrderDetails = openOrderDetails;
+
+function closeOrderModal() { document.getElementById('orderModal').style.display = 'none'; }
+document.getElementById('orderModalClose').addEventListener('click', closeOrderModal);
+document.getElementById('orderModalOk').addEventListener('click', closeOrderModal);
+document.getElementById('orderModal').addEventListener('click', e => { if (e.target === e.currentTarget) closeOrderModal(); });
+
 /* ===== ИСТОРИЯ (выполненные заказы) ===== */
 async function renderHistory() {
   const tbody = document.getElementById('historyBody');
@@ -749,6 +808,7 @@ async function renderHistory() {
     const res  = await fetch('/api/admin/orders.php', { credentials: 'include' });
     const json = await res.json();
     if (!json.ok) { tbody.innerHTML = '<tr><td colspan="7">Ошибка загрузки</td></tr>'; return; }
+    _allOrders = json.data; // чтобы модалка деталей работала и из истории
     orders = json.data.filter(o => o.status === 'Выполнен');
   } catch (e) {
     tbody.innerHTML = '<tr><td colspan="7">Ошибка соединения</td></tr>';
@@ -763,7 +823,10 @@ async function renderHistory() {
       <td>#${o.order_num}</td>
       <td>${o.user_name || o.name}</td>
       <td style="color:var(--adm-muted);font-size:0.8rem">${o.user_email || o.email}</td>
-      <td class="td-name" title="${(o.items||[]).map(i=>i.name).join(', ')}">${(o.items||[]).map(i => `${i.name} ×${i.qty}`).join(', ') || '—'}</td>
+      <td class="td-name">
+        <span class="order-items-link" onclick="openOrderDetails(${o.id})" title="Показать все позиции">${(o.items||[]).map(i => `${i.name} ×${i.qty}`).join(', ') || '—'}</span>
+        <button class="adm-btn adm-btn-sm" style="margin-left:0.4rem;padding:2px 8px" onclick="openOrderDetails(${o.id})">👁 ${(o.items||[]).length}</button>
+      </td>
       <td class="td-price">${formatMoney(o.total)}</td>
       <td>${o.date}</td>
       <td><span class="order-status-pill done">${o.status}</span></td>
