@@ -63,6 +63,8 @@
       .calc-layout { grid-template-columns: 1fr; }
       .result-card { position: static; }
     }
+    /* Кнопка «В корзину» для услуг */
+    .add-service-btn.in-cart { background: var(--primary); }
   </style>
 </head>
 <body>
@@ -474,23 +476,37 @@ function renderRecommendations(perUnitBudget) {
 
   // Рекомендованные услуги — из выбранных опций калькулятора
   const svc = [];
-  if (state.install)     svc.push({ icon: '🔧', name: 'Монтаж и пуско-наладка', price: 8000 * state.qty });
-  if (state.maintenance) svc.push({ icon: '🛠️', name: 'Первое ТО', price: 3500 * state.qty });
-  if (state.design)      svc.push({ icon: '📐', name: 'Проектирование системы', price: 15000 });
-  if (state.wifi)        svc.push({ icon: '📱', name: 'Wi-Fi модуль и настройка', price: 4500 * state.qty });
+  if (state.install)     svc.push({ key: 'install',     icon: '🔧', name: 'Монтаж и пуско-наладка', price: 8000 * state.qty });
+  if (state.maintenance) svc.push({ key: 'maintenance', icon: '🛠️', name: 'Первое ТО', price: 3500 * state.qty });
+  if (state.design)      svc.push({ key: 'design',      icon: '📐', name: 'Проектирование системы', price: 15000 });
+  if (state.wifi)        svc.push({ key: 'wifi',        icon: '📱', name: 'Wi-Fi модуль и настройка', price: 4500 * state.qty });
 
   const sc = document.getElementById('recommendServices');
   if (sc) {
-    sc.innerHTML = svc.length ? `
-      <h3 style="margin-bottom:1rem">Рекомендованные услуги</h3>
-      <div style="display:flex;flex-wrap:wrap;gap:0.75rem">
-        ${svc.map(s => `
-          <div style="display:flex;align-items:center;gap:0.6rem;background:var(--white);border:1.5px solid var(--gray-light);border-radius:10px;padding:0.75rem 1rem">
-            <span style="font-size:1.3rem">${s.icon}</span>
-            <span style="font-weight:600">${s.name}</span>
-            <span style="color:var(--accent);font-weight:700">+${formatNum(s.price)} ₽</span>
-          </div>`).join('')}
-      </div>` : '';
+    if (!svc.length) { sc.innerHTML = ''; return; }
+    // Найдём объекты услуг из SERVICES по id
+    const svcIds = { install: 's1', maintenance: 's3', design: 's5', wifi: null };
+    const svcObjects = svc.map(({ key }) => (window.SERVICES || []).find(s => s.id === svcIds[key])).filter(Boolean);
+
+    // Если нашли объекты — рендерим полные карточки с кнопкой В корзину
+    if (svcObjects.length) {
+      sc.innerHTML = `<h3 style="margin-bottom:1rem">Рекомендованные услуги</h3>
+        <div class="services-full-grid" id="calcSvcGrid">
+          ${svcObjects.map(s => renderServiceCard(s)).join('')}
+        </div>`;
+      attachServiceButtons(document.getElementById('calcSvcGrid'));
+    } else {
+      // Простой fallback без объектов
+      sc.innerHTML = `<h3 style="margin-bottom:1rem">Рекомендованные услуги</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:0.75rem">
+          ${svc.map(s => `
+            <div style="display:flex;align-items:center;gap:0.6rem;background:var(--white);border:1.5px solid var(--gray-light);border-radius:10px;padding:0.75rem 1rem">
+              <span style="font-size:1.3rem">${s.icon}</span>
+              <span style="font-weight:600">${s.name}</span>
+              <span style="color:var(--accent);font-weight:700">+${formatNum(s.price)} ₽</span>
+            </div>`).join('')}
+        </div>`;
+    }
   }
 }
 

@@ -127,6 +127,46 @@ function renderProductCard(p, inCart = false) {
     </div>`;
 }
 
+/* ===== RENDER SERVICE CARD ===== */
+function renderServiceCard(s) {
+  const cartItems = Cart.getItems();
+  const inCart = cartItems.some(i => i.id === s.id);
+  return `
+    <div class="service-card">
+      <div class="service-card-header">
+        <div class="icon">${s.emoji}</div>
+        <h3>${s.title}</h3>
+      </div>
+      <div class="service-card-body">
+        <p>${s.desc}</p>
+        <ul class="service-includes">
+          ${s.includes.map(i => `<li>${i}</li>`).join('')}
+        </ul>
+      </div>
+      <div class="service-price-block">
+        <span class="price">${s.price}</span>
+        <button class="btn btn-primary btn-sm add-service-btn ${inCart ? 'in-cart' : ''}"
+                data-service-id="${s.id}">
+          ${inCart ? '✓ В корзине' : 'В корзину'}
+        </button>
+      </div>
+    </div>`;
+}
+
+/* ===== ATTACH SERVICE CART BUTTONS ===== */
+function attachServiceButtons(container) {
+  container.addEventListener('click', e => {
+    const btn = e.target.closest('.add-service-btn');
+    if (!btn) return;
+    const id = btn.dataset.serviceId;
+    const svc = (window.SERVICES || SERVICES || []).find(s => s.id === id);
+    if (!svc) return;
+    Cart.addItem({ id: svc.id, name: svc.title, price: svc.basePrice, emoji: svc.emoji, categoryLabel: 'Услуга' });
+    btn.classList.add('in-cart');
+    btn.textContent = '✓ В корзине';
+  });
+}
+
 /* ===== ATTACH CART BUTTONS ===== */
 function attachCartButtons(container) {
   container.addEventListener('click', e => {
