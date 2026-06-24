@@ -1,9 +1,9 @@
 <?php
-/* ===== Климат-Инарс — One-time DB Setup ===== */
+/* ===== Климат-Инжиниринг — One-time DB Setup ===== */
 header('Content-Type: text/html; charset=utf-8');
 
 $host   = 'localhost';
-$dbname = 'klimat_inars';
+$dbname = 'klimat_inzhiniring';
 $user   = 'ki_user';
 $pass   = 'ki_password_2024';
 
@@ -17,7 +17,7 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     ]);
-    ok("Подключение к БД klimat_inars успешно");
+    ok("Подключение к БД klimat_inzhiniring успешно");
 } catch (PDOException $e) {
     fail("Ошибка подключения: " . $e->getMessage());
     goto output;
@@ -131,7 +131,7 @@ output:
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Setup — Климат-Инарс</title>
+<title>Setup — Климат-Инжиниринг</title>
 <style>
   body { font-family: monospace; background: #1a1a2e; color: #eee; padding: 2rem; }
   h1 { color: #3498db; }
@@ -142,7 +142,7 @@ output:
 </style>
 </head>
 <body>
-<h1>Климат-Инарс — Database Setup</h1>
+<h1>Климат-Инжиниринг — Database Setup</h1>
 <div class="box">
 <?php foreach ($log as $line): ?>
   <div class="ok"><?= htmlspecialchars($line) ?></div>

@@ -1,5 +1,5 @@
 <?php
-// ===== Климат-Инарс API Config =====
+// ===== Климат-Инжиниринг API Config =====
 session_start();
 
 // CORS headers
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 function db(): PDO {
     static $pdo = null;
     if ($pdo === null) {
-        $dsn = 'mysql:host=localhost;dbname=klimat_inars;charset=utf8mb4';
+        $dsn = 'mysql:host=localhost;dbname=klimat_inzhiniring;charset=utf8mb4';
         $pdo = new PDO($dsn, 'ki_user', 'ki_password_2024', [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,

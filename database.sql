@@ -1,4 +1,4 @@
--- ===== Климат-Инарс Database Schema =====
+-- ===== Климат-Инжиниринг Database Schema =====
 -- Run this file once to create tables and seed data
 -- Or visit http://your-server/api/setup.php to do it via web
 

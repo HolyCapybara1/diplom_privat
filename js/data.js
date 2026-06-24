@@ -1,4 +1,4 @@
-/* Product & Service data for Klimat-Inars */
+/* Product & Service data for Klimat-Inzhiniring */
 var PRODUCTS = [
   // ===== НАСТЕННЫЕ СПЛИТ-СИСТЕМЫ =====
   {
