@@ -3,7 +3,7 @@
 header('Content-Type: text/html; charset=utf-8');
 
 $host   = 'localhost';
-$dbname = 'klimat_inzhiniring';
+$dbname = 'klimat_inars';
 $user   = 'ki_user';
 $pass   = 'ki_password_2024';
 
@@ -17,7 +17,7 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $user, $pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     ]);
-    ok("Подключение к БД klimat_inzhiniring успешно");
+    ok("Подключение к БД klimat_inars успешно");
 } catch (PDOException $e) {
     fail("Ошибка подключения: " . $e->getMessage());
     goto output;
